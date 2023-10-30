@@ -10,7 +10,7 @@ export function getAPIClient(token, beta=true) {
     version: beta ? "2.0.0" : "1.0.0",
     host: beta ? "webflow.com/beta" : "webflow.com",
     headers: {
-      "User-Agent": "Devflow.party",
+      "User-Agent": "Lunch Pail Labs",
     }
   });
 }

@@ -7,6 +7,7 @@ const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 interface Site {
   id: string;
+  shortName: string;
 }
 
 interface Image {
@@ -14,9 +15,26 @@ interface Image {
 }
 
 interface UserInputProps {
-  setImages: any;
+  setForms: any;
   setPage: any;
   token: string;
+  selectedSite: Site | null;
+}
+
+interface SelectFormProps {
+  setForms: any;
+  setPage: any;
+  token: string;
+  domain: Domain | null;
+  selectedSite: Site | null;
+}
+
+interface SelectDomainProps {
+  setPage: any;
+  token: string;
+  selectedDomain: any;
+  setSelectedDomain: any;
+  selectedSite: Site | null;
 }
 
 interface SelectedImage {
@@ -36,12 +54,45 @@ interface LoginProps {
   token: any;
   setToken: any;
 }
+interface Field {
+  [key: string]: {
+    displayName: string;
+    type: string;
+    placeholder: string;
+    userVisible: boolean;
+  };
+}
+
+interface Form {
+  id: string;
+  displayName: string;
+  siteId: string;
+  workspaceId?: string;
+  siteDomainId?: string;
+  pageId?: string;
+  pageName?: string;
+  responseSettings: {
+    sendEmailConfirmation: boolean;
+    redirectUrl: string;
+    redirectMethod: string;
+    redirectAction?: string;
+  };
+  fields: Field[];
+  createdOn: string;
+  lastUpdated: string;
+}
+
+interface Domain {
+  id: string;
+  url: string;
+}
 
 const MainPage: React.FC = () => {
   const [page, setPage] = useState(0);
   const [token, setToken] = useState<string>("");
   const [selectedSite, setSelectedSite] = useState<Site | null>(null);
-  const [images, setImages] = useState<Image[]>([]);
+  const [selectedDomain, setSelectedDomain] = useState<Domain | null>(null);
+  const [forms, setForms] = useState<Form[]>([]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -51,7 +102,10 @@ const MainPage: React.FC = () => {
       const getSiteInfo = async () => {
         const siteInfo = await webflow.getSiteInfo();
         const siteId = siteInfo.siteId;
-        setSelectedSite({ id: siteId });
+        setSelectedSite({
+          id: siteId,
+          shortName: siteInfo.shortName,
+        });
       };
       setPage(auth ? 1 : 0);
       setToken(auth || "");
@@ -70,11 +124,27 @@ const MainPage: React.FC = () => {
       return <Login setPage={setPage} token={token} setToken={setToken} />;
     case 1:
       return (
-        <UserInput setImages={setImages} setPage={setPage} token={token} />
+        <SelectDomain
+          setPage={setPage}
+          token={token}
+          selectedSite={selectedSite}
+          selectedDomain={selectedDomain}
+          setSelectedDomain={setSelectedDomain}
+        />
+      );
+    case 2:
+      return (
+        <SelectForm
+          setForms={setForms}
+          setPage={setPage}
+          domain={selectedDomain}
+          token={token}
+          selectedSite={selectedSite}
+        />
       );
     case 3:
-      return (
-        <ImageOptions
+      return null;
+    /* <ImageOptions
           images={images}
           resetUserInput={() => {
             setImages([]);
@@ -82,8 +152,7 @@ const MainPage: React.FC = () => {
           }}
           selectedSite={selectedSite}
           token={token}
-        />
-      );
+        /> */
   }
 };
 
@@ -106,9 +175,11 @@ const Login: React.FC<LoginProps> = ({
       <div className="text-center space-y-8">
         <div>
           <h1 className="mt-3 text-4xl font-bold text-gray-200 mb-2">
-            Image Generator
+            Connect Mailerlite to Webflow
           </h1>
-          <h2 className="mt-3 text-lg text-gray-400 mb-2">by Devflow.party</h2>
+          <h2 className="mt-3 text-lg text-gray-400 mb-2">
+            by Lunch Pail Labs
+          </h2>
           <div className="mt-8 space-y-6">
             <input
               type="text"
@@ -135,7 +206,303 @@ const Login: React.FC<LoginProps> = ({
   );
 };
 
-const UserInput: React.FC<UserInputProps> = ({ setImages, token, setPage }) => {
+const SelectDomain: React.FC<SelectDomainProps> = ({
+  token,
+  selectedSite,
+  setPage,
+  setSelectedDomain,
+  selectedDomain,
+}) => {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [domains, setDomains] = useState<Domain[]>([]);
+
+  useEffect(() => {
+    fetchDomains();
+  }, [selectedSite]);
+
+  const handleDomainClick = (domain: Domain) => {
+    setSelectedDomain(domain);
+    setPage(2);
+  };
+
+  const fetchDomains = async () => {
+    setIsLoading(true);
+
+    if (!selectedSite) {
+      return;
+    }
+    const params = new URLSearchParams({
+      auth: token,
+      siteId: selectedSite.id,
+    });
+
+    try {
+      const response = await fetch(
+        `${BACKEND_URL}/api/domains?${params.toString()}`,
+        {
+          method: "GET",
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      if (data.domains.customDomains) {
+        const additionalDomain = {
+          id: selectedSite.id,
+          url: `${selectedSite.shortName}.webflow.io`,
+        };
+
+        const updatedDomains = [
+          ...data.domains.customDomains,
+          additionalDomain,
+        ];
+        console.log("updatedDomains", updatedDomains);
+        setDomains(updatedDomains);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className="flex flex-col items-center justify-center py-2 px-2 bg-wf-gray text-wf-lightgray h-screen overflow-auto">
+      <div className="text-center space-y-4 flex flex-col h-full justify-between pb-2">
+        {isLoading ? (
+          <div>Loading...</div>
+        ) : (
+          <div>
+            <h1 className="text-lg font-bold text-gray-200 mb-2 mt-2">
+              Select Domain
+            </h1>
+            <p className="text-sm mb-4">
+              Multiple domains are linked to your Webflow site. Please select
+              the domain from which you would like to send forms to MailerLite.
+              You can set up multiple domains later.
+            </p>
+            <ul className="space-y-2">
+              {domains.map((domain, index) => (
+                <li key={index} className="border-b border-gray-600">
+                  <button
+                    onClick={() => handleDomainClick(domain)}
+                    className={`py-2 px-4 w-full text-left hover:bg-gray-800 ${
+                      domain === selectedDomain ? "bg-gray-700 text-white" : ""
+                    }`}
+                  >
+                    {domain.url}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+const SelectForm: React.FC<SelectFormProps> = ({
+  token,
+  selectedSite,
+  setPage,
+  domain
+}) => {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [selectedForm, setSelectedForm] = useState<Form | null>(null);
+  const [forms, setForms] = useState<Form[]>([]);
+
+  console.log('domain', domain);
+
+  useEffect(() => {
+    fetchForms();
+  }, [selectedSite]);
+
+  const handleFormClick = (form: Form) => {
+    setSelectedForm(form);
+    console.log("selectedForm", selectedForm);
+    //setPage(3);
+  };
+
+  const fetchForms = async () => {
+    setIsLoading(true);
+
+    if (!selectedSite) {
+      return;
+    }
+    const params = new URLSearchParams({
+      auth: token,
+      siteId: selectedSite.id,
+    });
+
+    try {
+      const response = await fetch(
+        `${BACKEND_URL}/api/forms?${params.toString()}`,
+        {
+          method: "GET",
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log('data-forms', data.forms.forms)
+
+      const arrayOfForms = data.forms.forms;
+      arrayOfForms.forEach(
+        (form: { displayName: any; id: any; siteDomainId: any }) => {
+          console.log(
+            "form name",
+            form.displayName,
+            "form id",
+            form.id,
+            "form site ID",
+            form.siteDomainId
+          );
+        }
+      );
+
+      if (data.forms.forms && domain) {
+        const filteredForms = data.forms.forms.filter((form: { siteDomainId: any; }) => form.siteDomainId === domain.id);
+        setForms(filteredForms);
+        console.log("forms", filteredForms);
+    }
+    
+    } catch (error) {
+      console.error("Error:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className="flex flex-col items-center justify-center py-2 px-2 bg-wf-gray text-wf-lightgray h-screen overflow-auto">
+      <div className="text-center space-y-4 flex flex-col h-full justify-between pb-2">
+        {isLoading ? (
+          <div>Loading...</div>
+        ) : (
+          <div>
+            <h1 className="text-lg font-bold text-gray-200 mb-2 mt-2">
+              Select a Form
+            </h1>
+            <p className="text-sm mb-4">
+              Select a form on domain, {domain?.url}, to connect to Mailerlite
+            </p>
+            <ul>
+              {forms.map((form, index) => (
+                <li key={index} className="border-b border-gray-600">
+                  <button
+                    onClick={() => handleFormClick(form)}
+                    className={`py-2 px-4 w-full text-left ${
+                      form === selectedForm ? "bg-gray-700 text-white" : ""
+                    }`}
+                  >
+                  {form.displayName}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+const ConfigureMailerlite: React.FC<SelectFormProps> = ({
+  token,
+  selectedSite,
+}) => {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [selectedForm, setSelectedForm] = useState<Form | null>(null);
+  const [forms, setForms] = useState<Form[]>([]);
+
+  useEffect(() => {
+    fetchForms();
+  }, [selectedSite]);
+
+  const handleFormClick = (form: Form) => {
+    setSelectedForm(form);
+    console.log("selectedForm", selectedForm);
+    //setPage(3);
+  };
+
+  const fetchForms = async () => {
+    setIsLoading(true);
+    console.log("right before auth", token);
+
+    if (!selectedSite) {
+      return;
+    }
+    const params = new URLSearchParams({
+      auth: token,
+      siteId: selectedSite.id,
+    });
+
+    try {
+      const response = await fetch(
+        `${BACKEND_URL}/api/forms?${params.toString()}`,
+        {
+          method: "GET",
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log("data:", data); // Logs the entire data object
+      console.log("forms object:", data.forms); // Logs the forms object
+      console.log("arrayOfForms:", data.forms.forms); // Logs the array of forms
+
+      if (data.forms.forms) {
+        setForms(data.forms.forms);
+        console.log("forms", forms);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className="flex flex-col items-center justify-center py-2 px-2 bg-wf-gray text-wf-lightgray h-screen overflow-auto">
+      <div className="text-center space-y-4 flex flex-col h-full justify-between pb-2">
+        {isLoading ? (
+          <div>Loading...</div>
+        ) : (
+          <div>
+            <h1 className="text-lg font-bold text-gray-200 mb-2 mt-2">
+              Select a Form
+            </h1>
+            <ul>
+              {forms.map((form, index) => (
+                <li key={index} className="border-b border-gray-600">
+                  <button
+                    onClick={() => handleFormClick(form)}
+                    className={`py-2 px-4 w-full text-left ${
+                      form === selectedForm ? "bg-gray-700 text-white" : ""
+                    }`}
+                  >
+                    Page: {form.pageName} - Form name: {form.displayName}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+/*const UserInput: React.FC<UserInputProps> = ({ setImages, token, setPage }) => {
   const [prompt, setPrompt] = useState<string>("");
   const [size, setSize] = useState<number>(256);
   const [n, setN] = useState<number>(1);
@@ -230,9 +597,9 @@ const UserInput: React.FC<UserInputProps> = ({ setImages, token, setPage }) => {
       </div>
     </div>
   );
-};
+};*/
 
-const ImageOptions: React.FC<ImageOptionsProps> = ({
+/*const ImageOptions: React.FC<ImageOptionsProps> = ({
   images,
   resetUserInput,
   selectedSite,
@@ -394,6 +761,6 @@ const ImageOptions: React.FC<ImageOptionsProps> = ({
       </div>
     </div>
   );
-};
+}; */
 
 export default MainPage;
