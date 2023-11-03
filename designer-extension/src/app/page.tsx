@@ -1,6 +1,7 @@
 "use client";
 import { motion } from "framer-motion"; // For animations
 import React, { useEffect, useState } from "react";
+import { Webhook } from "webflow-api/dist/api";
 // import Image from "next/image";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
@@ -10,19 +11,46 @@ interface Site {
   shortName: string;
 }
 
-interface Image {
-  url: string;
+interface WebflowFormFields {
+  displayName: string;
+  id: string;
 }
 
-interface UserInputProps {
-  setForms: any;
+interface FieldObject {
+  displayName: string;
+  placeholder: string;
+  type: string;
+  userVisible: boolean;
+}
+
+type FieldArrayItem = Array<string | FieldObject>;
+
+type FieldsArray = FieldArrayItem[];
+
+//removing for now will expand MailerLite fields later...
+interface MailerliteFields {
+  id: string;
+  name: string;
+  key: string;
+}
+
+interface MailerliteGroups {
+  id: string;
+  name: string;
+}
+
+interface ConfigureMailerLiteProps {
+  setSelectedForm: any;
+  selectedForm: any;
   setPage: any;
   token: string;
+  domain: Domain | null;
   selectedSite: Site | null;
 }
 
 interface SelectFormProps {
-  setForms: any;
+  setSelectedForm: any;
+  selectedForm: any;
   setPage: any;
   token: string;
   domain: Domain | null;
@@ -37,16 +65,21 @@ interface SelectDomainProps {
   selectedSite: Site | null;
 }
 
-interface SelectedImage {
-  index: number;
-  url: string;
+interface ViewWebhookProps {
+  setPage: any;
+  token: string;
+  selectedSite: Site | null;
 }
 
-interface ImageOptionsProps {
-  images: Image[];
-  resetUserInput: () => void;
-  selectedSite: Site | null;
-  token: string;
+interface WebhookProps {
+  id: string;
+  triggerType: string;
+  siteId: string;
+  workspaceId: string;
+  filter: { id: string };
+  lastTriggered: Date;
+  createdOn: Date;
+  url: string;
 }
 
 interface LoginProps {
@@ -92,7 +125,7 @@ const MainPage: React.FC = () => {
   const [token, setToken] = useState<string>("");
   const [selectedSite, setSelectedSite] = useState<Site | null>(null);
   const [selectedDomain, setSelectedDomain] = useState<Domain | null>(null);
-  const [forms, setForms] = useState<Form[]>([]);
+  const [selectedForm, setSelectedForm] = useState<Form | null>(null);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -135,7 +168,8 @@ const MainPage: React.FC = () => {
     case 2:
       return (
         <SelectForm
-          setForms={setForms}
+          selectedForm={selectedForm}
+          setSelectedForm={setSelectedForm}
           setPage={setPage}
           domain={selectedDomain}
           token={token}
@@ -143,16 +177,24 @@ const MainPage: React.FC = () => {
         />
       );
     case 3:
-      return null;
-    /* <ImageOptions
-          images={images}
-          resetUserInput={() => {
-            setImages([]);
-            setPage(2);
-          }}
-          selectedSite={selectedSite}
+      return (
+        <ConfigureMailerlite
+          selectedForm={selectedForm}
+          setSelectedForm={setSelectedForm}
+          setPage={setPage}
+          domain={selectedDomain}
           token={token}
-        /> */
+          selectedSite={selectedSite}
+        />
+      );
+    case 4:
+      return (
+        <ViewWebhooks
+          setPage={setPage}
+          token={token}
+          selectedSite={selectedSite}
+        />
+      );
   }
 };
 
@@ -259,7 +301,6 @@ const SelectDomain: React.FC<SelectDomainProps> = ({
           ...data.domains.customDomains,
           additionalDomain,
         ];
-        console.log("updatedDomains", updatedDomains);
         setDomains(updatedDomains);
       }
     } catch (error) {
@@ -308,13 +349,12 @@ const SelectForm: React.FC<SelectFormProps> = ({
   token,
   selectedSite,
   setPage,
-  domain
+  domain,
+  setSelectedForm,
+  selectedForm,
 }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [selectedForm, setSelectedForm] = useState<Form | null>(null);
   const [forms, setForms] = useState<Form[]>([]);
-
-  console.log('domain', domain);
 
   useEffect(() => {
     fetchForms();
@@ -322,8 +362,7 @@ const SelectForm: React.FC<SelectFormProps> = ({
 
   const handleFormClick = (form: Form) => {
     setSelectedForm(form);
-    console.log("selectedForm", selectedForm);
-    //setPage(3);
+    setPage(3);
   };
 
   const fetchForms = async () => {
@@ -350,28 +389,13 @@ const SelectForm: React.FC<SelectFormProps> = ({
       }
 
       const data = await response.json();
-      console.log('data-forms', data.forms.forms)
-
-      const arrayOfForms = data.forms.forms;
-      arrayOfForms.forEach(
-        (form: { displayName: any; id: any; siteDomainId: any }) => {
-          console.log(
-            "form name",
-            form.displayName,
-            "form id",
-            form.id,
-            "form site ID",
-            form.siteDomainId
-          );
-        }
-      );
 
       if (data.forms.forms && domain) {
-        const filteredForms = data.forms.forms.filter((form: { siteDomainId: any; }) => form.siteDomainId === domain.id);
+        const filteredForms = data.forms.forms.filter(
+          (form: { siteDomainId: any }) => form.siteDomainId === domain.id
+        );
         setForms(filteredForms);
-        console.log("forms", filteredForms);
-    }
-    
+      }
     } catch (error) {
       console.error("Error:", error);
     } finally {
@@ -401,7 +425,7 @@ const SelectForm: React.FC<SelectFormProps> = ({
                       form === selectedForm ? "bg-gray-700 text-white" : ""
                     }`}
                   >
-                  {form.displayName}
+                    {form.displayName}
                   </button>
                 </li>
               ))}
@@ -413,27 +437,209 @@ const SelectForm: React.FC<SelectFormProps> = ({
   );
 };
 
-const ConfigureMailerlite: React.FC<SelectFormProps> = ({
-  token,
+const ConfigureMailerlite: React.FC<ConfigureMailerLiteProps> = ({
+  setPage,
+  selectedForm,
   selectedSite,
+  token,
 }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [selectedForm, setSelectedForm] = useState<Form | null>(null);
-  const [forms, setForms] = useState<Form[]>([]);
+  //const [fields, setFields] = useState<MailerliteFields[]>([]);
+  const [groups, setGroups] = useState<MailerliteGroups[]>([]);
+  const [webflowFormFields, setWebflowFormFields] = useState<
+    WebflowFormFields[]
+  >([]);
+  const [fieldConnections, setFieldConnections] = useState<
+    Record<string, string>
+  >({});
 
-  useEffect(() => {
-    fetchForms();
-  }, [selectedSite]);
+  const mKey = String(process.env.MAILERLITE_API_KEY);
 
-  const handleFormClick = (form: Form) => {
-    setSelectedForm(form);
-    console.log("selectedForm", selectedForm);
-    //setPage(3);
+  console.log("selectedForm", selectedForm);
+
+  const fetchMailerlite = async () => {
+    setIsLoading(true);
+
+    const params = new URLSearchParams({
+      auth: mKey,
+    });
+
+    try {
+      const response = await fetch(
+        `${BACKEND_URL}/api/mailerlite?${params.toString()}`,
+        {
+          method: "GET",
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (data.groups) {
+        setGroups(data.groups);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const fetchForms = async () => {
+  useEffect(() => {
+    fetchMailerlite();
+    const transformedData = transformFields(fieldsArray);
+    setWebflowFormFields(transformedData);
+  }, [selectedForm]);
+
+  const fieldsArray: FieldsArray = Object.entries(selectedForm.fields);
+
+  const transformFields = (fields: FieldsArray): WebflowFormFields[] => {
+    return fields.map((item) => {
+      return {
+        id: item[0] as string,
+        displayName: (item[1] as FieldObject).displayName,
+      };
+    });
+  };
+
+  // Update selections when a dropdown value is changed
+  const handleDropdownChange = (fieldId: string, selectedValue: string) => {
+    setFieldConnections((prevState) => ({
+      ...prevState,
+      [fieldId]: selectedValue,
+    }));
+  };
+
+  const handleConfirm = async () => {
+    try {
+      console.log("at the try the selectedForm");
+      const webhookParams = new URLSearchParams({
+        fieldConnection: JSON.stringify(fieldConnections),
+        siteId: selectedSite ? selectedSite.id : "none",
+        auth: token,
+        formId: selectedForm.id,
+      });
+
+      console.log("webhookparams", webhookParams);
+      console.log(
+        "url",
+        `${BACKEND_URL}/api/webhooks?${webhookParams.toString()}`
+      );
+
+      const response = await fetch(
+        `${BACKEND_URL}/api/webhooks?${webhookParams.toString()}`,
+        {
+          method: "POST",
+        }
+      );
+
+      if (response.ok) {
+        setPage(4);
+      } else {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  //TODO: Add something here that does something when there are 0 fields.......
+  return (
+    <div className="flex flex-col items-center justify-center py-4 px-4 bg-wf-gray text-wf-lightgray h-screen overflow-auto">
+      <div className="text-center space-y-6 flex flex-col h-full justify-between">
+        {isLoading ? (
+          <div>Loading...</div>
+        ) : (
+          <>
+            <h1 className="text-2xl font-semibold text-gray-200 mb-4 mt-4">
+              Configure Webflow form fields for Mailerlite
+            </h1>
+            <div className="space-y-6">
+              {/* Select email */}
+              <div className="border-b border-gray-600 py-2 flex justify-between items-center">
+                <span>Email</span>
+                <select
+                  required
+                  onChange={(e) =>
+                    handleDropdownChange("email", e.target.value)
+                  }
+                  className="appearance-none py-1 px-3 bg-wf-gray border rounded shadow leading-tight focus:outline-none focus:shadow-outline"
+                >
+                  <option value="" disabled selected>
+                    Select Email Field
+                  </option>
+                  {webflowFormFields.map((webflowField) => (
+                    <option key={webflowField.id} value={webflowField.id}>
+                      {webflowField.displayName}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              {/* Select group */}
+              <div className="border-b border-gray-600 py-2 flex justify-between items-center">
+                <span>Group</span>
+                <select
+                  required
+                  onChange={(e) =>
+                    handleDropdownChange("group", e.target.value)
+                  }
+                  className="appearance-none py-1 px-3 bg-wf-gray border rounded shadow leading-tight focus:outline-none focus:shadow-outline"
+                >
+                  <option value="" disabled selected>
+                    Select Mailerlite Group
+                  </option>
+                  {groups.map((group) => (
+                    <option key={group.id} value={group.id}>
+                      {group.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            <button
+              className="mt-6 mb-6 px-6 py-2 bg-blue-500 text-white rounded shadow hover:bg-blue-600 transition duration-150 ease-in-out"
+              onClick={handleConfirm}
+            >
+              Confirm Selections
+            </button>
+          </>
+        )}
+      </div>
+    </div>
+  );
+};
+
+const ViewWebhooks: React.FC<ViewWebhookProps> = ({
+  token,
+  selectedSite,
+  setPage,
+}) => {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [webhooks, setWebhooks] = useState<WebhookProps[]>([]);
+
+  useEffect(() => {
+    fetchWebhooks();
+  }, [selectedSite]);
+
+  const handleDelete = (webhook: WebhookProps) => {
+    console.log(webhook);
+  };
+
+  const handleBack = () => {
+    setPage(3);
+  };
+
+  const handleConnectNew = () => {
+    setPage(token ? 1 : 0);
+  };
+
+  const fetchWebhooks = async () => {
     setIsLoading(true);
-    console.log("right before auth", token);
 
     if (!selectedSite) {
       return;
@@ -445,7 +651,7 @@ const ConfigureMailerlite: React.FC<SelectFormProps> = ({
 
     try {
       const response = await fetch(
-        `${BACKEND_URL}/api/forms?${params.toString()}`,
+        `${BACKEND_URL}/api/webhooks?${params.toString()}`,
         {
           method: "GET",
         }
@@ -456,13 +662,9 @@ const ConfigureMailerlite: React.FC<SelectFormProps> = ({
       }
 
       const data = await response.json();
-      console.log("data:", data); // Logs the entire data object
-      console.log("forms object:", data.forms); // Logs the forms object
-      console.log("arrayOfForms:", data.forms.forms); // Logs the array of forms
-
-      if (data.forms.forms) {
-        setForms(data.forms.forms);
-        console.log("forms", forms);
+      if (data.webhooks) {
+        console.log("webhooks", data.webhooks.webhooks);
+        setWebhooks(data.webhooks.webhooks);
       }
     } catch (error) {
       console.error("Error:", error);
@@ -472,295 +674,49 @@ const ConfigureMailerlite: React.FC<SelectFormProps> = ({
   };
 
   return (
-    <div className="flex flex-col items-center justify-center py-2 px-2 bg-wf-gray text-wf-lightgray h-screen overflow-auto">
-      <div className="text-center space-y-4 flex flex-col h-full justify-between pb-2">
-        {isLoading ? (
-          <div>Loading...</div>
-        ) : (
-          <div>
-            <h1 className="text-lg font-bold text-gray-200 mb-2 mt-2">
-              Select a Form
-            </h1>
-            <ul>
-              {forms.map((form, index) => (
-                <li key={index} className="border-b border-gray-600">
-                  <button
-                    onClick={() => handleFormClick(form)}
-                    className={`py-2 px-4 w-full text-left ${
-                      form === selectedForm ? "bg-gray-700 text-white" : ""
-                    }`}
-                  >
-                    Page: {form.pageName} - Form name: {form.displayName}
-                  </button>
-                </li>
-              ))}
-            </ul>
+    <div className="flex flex-col items-center justify-center py-6 px-4 bg-wf-gray text-wf-lightgray min-h-screen">
+      {isLoading ? (
+        <div>Loading...</div>
+      ) : (
+        <div className="w-full max-w-xl space-y-6">
+          <h1 className="text-2xl font-semibold text-gray-200 text-center">
+            View and remove webhooks
+          </h1>
+          <p className="text-sm mb-2 text-center">View all form connections</p>
+          <ul className="space-y-4 divide-y divide-gray-600">
+            {webhooks.map((webhook) => (
+              <li
+                key={webhook.id}
+                className="flex justify-between items-center py-2"
+              >
+                <span>{webhook.id}</span>
+                <button
+                  onClick={() => handleDelete(webhook)}
+                  className="py-2 px-4 hover:bg-red-600 bg-red-500 text-white rounded-md"
+                >
+                  Delete Connection
+                </button>
+              </li>
+            ))}
+          </ul>
+          <div className="flex justify-between mt-4 space-x-2">
+            <button
+              onClick={() => handleBack()}
+              className="py-2 px-4 bg-gray-600 hover:bg-gray-700 text-white rounded-md flex-grow"
+            >
+              Back
+            </button>
+            <button
+              onClick={() => handleConnectNew()}
+              className="py-2 px-4 bg-blue-500 hover:bg-blue-600 text-white rounded-md flex-grow"
+            >
+              Create New Connection
+            </button>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 };
-
-/*const UserInput: React.FC<UserInputProps> = ({ setImages, token, setPage }) => {
-  const [prompt, setPrompt] = useState<string>("");
-  const [size, setSize] = useState<number>(256);
-  const [n, setN] = useState<number>(1);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-
-  const generateImages = async () => {
-    setIsLoading(true);
-    const params = new URLSearchParams({
-      auth: token,
-      prompt: prompt,
-      n: n.toString(),
-      size: size.toString(),
-    });
-
-    try {
-      const response = await fetch(
-        `${BACKEND_URL}/api/images?${params.toString()}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      if (data.images) {
-        setImages(data.images);
-        setPage(3);
-      }
-    } catch (error) {
-      console.error("Error:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  return (
-    <div className="flex flex-col items-center justify-center py-2 px-2 bg-wf-gray text-wf-lightgray h-screen overflow-auto">
-      <div className="text-center space-y-4 flex flex-col h-full justify-between pb-2">
-        <div>
-          <h1 className="text-lg font-bold text-gray-200 mb-2 mt-2">
-            Describe your desired image
-          </h1>
-          <textarea
-            className="bg-gray-700 rounded-md p-2 w-full h-32 -mb-2 resize-none"
-            placeholder="A busy coffee shop with people working on their laptops."
-            value={prompt}
-            onChange={(e) => setPrompt(e.target.value)}
-          />
-        </div>
-        <div className="mb-2">
-          <p className="text-white mb-2">Image size: {size}</p>
-          <div className="flex justify-center w-full space-x-2">
-            {[256, 512, 1024].map((btnSize, i) => (
-              <button
-                key={i}
-                onClick={() => setSize(btnSize)}
-                className={`mb-2 rounded-md py-2 px-2 text-xs font-medium text-white ${
-                  size === btnSize ? "bg-blue-600" : "bg-gray-700"
-                } hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 cursor-pointer border-gray-700 w-full`}
-              >
-                {btnSize}
-              </button>
-            ))}
-          </div>
-        </div>
-        <div className="mb-2">
-          <p className="text-white mb-2">Number of images: {n}</p>
-          <input
-            className="rounded-md bg-gray-700 w-full"
-            type="range"
-            min="1"
-            max="10"
-            value={n}
-            onChange={(e) => setN(parseInt(e.target.value))}
-          />
-        </div>
-        <div>
-          <button
-            onClick={generateImages}
-            className="rounded-md border border-transparent py-2 px-2 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 cursor-pointer border-gray-700 w-full"
-            disabled={isLoading}
-          >
-            {isLoading ? "Generating..." : "Generate"}
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-};*/
-
-/*const ImageOptions: React.FC<ImageOptionsProps> = ({
-  images,
-  resetUserInput,
-  selectedSite,
-  token,
-}) => {
-  const [page, setPage] = useState<number>(1);
-  const [addedImages, setAddedImages] = useState<number[]>([]);
-  const [selectedImage, setSelectedImage] = useState<SelectedImage | null>(
-    null
-  );
-  const imagesPerPage = 4;
-  const pageLength = Math.ceil(images.length / 4);
-  const [uploading, setUploading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const resetImageOptions = () => {
-    setPage(1);
-    setAddedImages([]);
-    setSelectedImage(null);
-    setUploading(false);
-    setError(null);
-  };
-
-  const navigateToImagePreview = (imgIndex: number, url: string) => {
-    setSelectedImage({ index: imgIndex, url: url });
-  };
-
-  const handleAddImage = async () => {
-    if (selectedImage && !addedImages.includes(selectedImage.index)) {
-      setUploading(true);
-      try {
-        if (!selectedSite) {
-          throw new Error("No site selected");
-        }
-        const response = await postImage(selectedImage.url, selectedSite.id);
-        if (response.error) {
-          throw new Error(response.error);
-        }
-        setAddedImages([...addedImages, selectedImage.index]);
-        setSelectedImage(null);
-        setError(null);
-      } catch (error: any) {
-        setError(error.message);
-      } finally {
-        setUploading(false);
-      }
-    }
-  };
-
-  async function postImage(imageURL: string, siteId: string) {
-    const response = await fetch(`${BACKEND_URL}/api/images`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ imageURL, siteId, auth: token }),
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const data = await response.json();
-    return data;
-  }
-
-  const currentPageImages = images.slice(
-    (page - 1) * imagesPerPage,
-    page * imagesPerPage
-  );
-
-  return (
-    <div className="flex flex-col items-center justify-center py-2 px-2 bg-wf-gray text-wf-lightgray h-screen overflow-auto space-y-4">
-      {!selectedImage ? (
-        <div className="text-center space-y-4 flex flex-col h-full pb-2">
-          <div>
-            <h1 className="text-lg font-bold text-gray-200 mb-2 mt-2">
-              Select Your Custom Images
-            </h1>
-          </div>
-          <div className="grid grid-cols-2 gap-2 justify-center mb-2">
-            {currentPageImages.map((img, i) => (
-              <div key={i} className="relative">
-                <button
-                  className="cursor-pointer"
-                  onClick={() => {
-                    const index = i + 1 + (page - 1) * 4;
-                    navigateToImagePreview(index, img.url);
-                  }}
-                  onKeyDown={(e) => {
-                    // Check if the key is -Enter-;
-                    if (e.key === "Enter") {
-                      const index = i + 1 + (page - 1) * 4;
-                      navigateToImagePreview(index, img.url);
-                    }
-                  }}
-                >
-                  <img
-                    src={img.url}
-                    alt=""
-                    width={128}
-                    height={128}
-                    className="object-cover rounded-md"
-                  />
-                </button>
-                {addedImages.includes(i + 1 + (page - 1) * 4) && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-md">
-                    <span className="text-white">Added!</span>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-          {pageLength > 1 && (
-            <div className="flex justify-between items-center w-full">
-              <button disabled={page === 1} onClick={() => setPage(page - 1)}>
-                Prev
-              </button>
-              <span>
-                Page {page} of {pageLength}
-              </span>
-              <button
-                disabled={page === pageLength}
-                onClick={() => setPage(page + 1)}
-              >
-                Next
-              </button>
-            </div>
-          )}
-        </div>
-      ) : (
-        <div className="flex flex-col items-center justify-center h-full overflow-auto space-y-4">
-          <img
-            src={selectedImage.url}
-            alt=""
-            width={256}
-            height={256}
-            className="object-cover rounded-md cursor-pointer"
-          />
-          <div className="flex justify-between items-center w-full">
-            <button onClick={() => setSelectedImage(null)}>Go Back</button>
-            <button onClick={handleAddImage} disabled={uploading}>
-              {uploading ? "Uploading..." : "Add"}
-            </button>
-          </div>
-          {error && <div>Error: {error}</div>}
-        </div>
-      )}
-      <div className="mt-4">
-        <button
-          className="group relative justify-center rounded-md border border-transparent bg-blue-600 py-2 px-2 text-xs font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 cursor-pointer border-gray-700 w-full"
-          onClick={() => {
-            resetImageOptions();
-            resetUserInput();
-          }}
-        >
-          Start Over
-        </button>
-      </div>
-    </div>
-  );
-}; */
 
 export default MainPage;
