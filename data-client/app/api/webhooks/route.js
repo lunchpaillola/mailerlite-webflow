@@ -22,7 +22,7 @@ const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
  * @throws Will throw an error if the 'imageURL' or 'siteId' is missing in the request, if there's an HTTP error when fetching the image, or if the upload to Webflow fails.
  */
 
-// Create a wbeflow hook
+//GET a webgook
 
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
@@ -36,7 +36,7 @@ export async function GET(request) {
       {
         headers: {
           "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Methods": "POST",
+          "Access-Control-Allow-Methods": "GET, POST, DELETE",
           "Access-Control-Allow-Headers": "Content-Type",
         },
       }
@@ -45,17 +45,14 @@ export async function GET(request) {
 
   const webflowAPI = getAPIClient(auth);
 
-
   try {
-    console.log("trying to get the webgooks");
     const response = await webflowAPI.get(`sites/${siteId}/webhooks`);
-    console.log("getting the webhooks, response", response.data);
     return NextResponse.json(
       { webhooks: response.data },
       {
         headers: {
           "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Methods": "POST",
+          "Access-Control-Allow-Methods": "GET, POST, DELETE",
           "Access-Control-Allow-Headers": "Content-Type",
         },
       }
@@ -66,7 +63,6 @@ export async function GET(request) {
   }
 }
 
-
 export async function POST(request) {
   const { searchParams } = new URL(request.url);
   const fieldConnectionString = searchParams.get("fieldConnection");
@@ -74,13 +70,15 @@ export async function POST(request) {
   const siteId = searchParams.get("siteId");
   const auth = searchParams.get("auth");
   const formId = searchParams.get("formId");
+  const formName = searchParams.get("formName");
 
+  console.log(formId, formName)
 
   const params = new URLSearchParams({
     email: fieldConnection.email,
-    group: fieldConnection.group
+    group: fieldConnection.group,
   });
-  const webhookUrl = `${BACKEND_URL}/api/webhooks?${params.toString()}`;
+  const webhookUrl = `${BACKEND_URL}/api/mailerlite?${params.toString()}`;
 
   if (!auth) {
     console.log("error");
@@ -89,7 +87,7 @@ export async function POST(request) {
       {
         headers: {
           "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Methods": "POST",
+          "Access-Control-Allow-Methods": "GET, POST, DELETE",
           "Access-Control-Allow-Headers": "Content-Type",
         },
       }
@@ -98,22 +96,22 @@ export async function POST(request) {
 
   const webflowAPI = getAPIClient(auth);
 
-
   try {
-    const response = await webflowAPI.post(`sites/${siteId}/webhooks`,
-    {
+    const response = await webflowAPI.post(`sites/${siteId}/webhooks`, {
       triggerType: "form_submission",
       url: webhookUrl,
       filter: {
-        id: formId,
+        formId: formId,
+        formName: formName,
       },
     });
+    console.log('response.data', response.data);
     return NextResponse.json(
       { webhooks: response.data },
       {
         headers: {
           "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Methods": "POST",
+          "Access-Control-Allow-Methods": "GET, POST, DELETE",
           "Access-Control-Allow-Headers": "Content-Type",
         },
       }
@@ -121,5 +119,51 @@ export async function POST(request) {
   } catch (error) {
     console.error(error);
     return NextResponse.json({ error: error.message });
+  }
+}
+
+export async function DELETE(request) {
+  console.log("delete");
+  const { searchParams } = new URL(request.url);
+  const auth = searchParams.get("auth");
+  const webhookId = searchParams.get("webhookId");
+  console.log(webhookId, auth);
+
+  if (!auth) {
+    console.log("error");
+    return NextResponse.json(
+      { ok: false, error: "Not authenticated" },
+      {
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "DELETE,",
+          "Access-Control-Allow-Headers": "Content-Type",
+        },
+      }
+    );
+  }
+
+  const webflowAPI = getAPIClient(auth);
+
+  try {
+    const response = await webflowAPI.delete(`webhooks/${webhookId}`);
+    console.log("deleting the webhooks", response.data);
+
+    // Create a response with a 204 status code to indicate success with no content.
+    return new NextResponse(null, {
+      status: 204,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "DELETE,",
+        "Access-Control-Allow-Headers": "Content-Type",
+      },
+    });
+  } catch (error) {
+    console.error(error);
+
+    // Here you can also provide an appropriate status code, for example, 400 for a bad request, or 500 for server errors.
+    return new NextResponse(JSON.stringify({ error: error.message }), {
+      status: error.response?.status || 500,
+    });
   }
 }

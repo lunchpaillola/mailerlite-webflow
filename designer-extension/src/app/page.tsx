@@ -76,7 +76,7 @@ interface WebhookProps {
   triggerType: string;
   siteId: string;
   workspaceId: string;
-  filter: { id: string };
+  filter: { formId: string, formName: string,};
   lastTriggered: Date;
   createdOn: Date;
   url: string;
@@ -455,7 +455,6 @@ const ConfigureMailerlite: React.FC<ConfigureMailerLiteProps> = ({
 
   const mKey = String(process.env.MAILERLITE_API_KEY);
 
-  console.log("selectedForm", selectedForm);
 
   const fetchMailerlite = async () => {
     setIsLoading(true);
@@ -521,6 +520,7 @@ const ConfigureMailerlite: React.FC<ConfigureMailerLiteProps> = ({
         siteId: selectedSite ? selectedSite.id : "none",
         auth: token,
         formId: selectedForm.id,
+        formName: selectedForm.displayName,
       });
 
       console.log("webhookparams", webhookParams);
@@ -621,14 +621,50 @@ const ViewWebhooks: React.FC<ViewWebhookProps> = ({
 }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [webhooks, setWebhooks] = useState<WebhookProps[]>([]);
+  
 
   useEffect(() => {
     fetchWebhooks();
   }, [selectedSite]);
 
-  const handleDelete = (webhook: WebhookProps) => {
-    console.log(webhook);
-  };
+  if (!selectedSite) {
+    return;
+  }
+  
+
+  const handleDelete = async (webhook: WebhookProps) => {
+    console.log("Attempting to delete webhook:", webhook.id);
+    const deleteParams = new URLSearchParams({
+      auth: token,
+      webhookId: webhook.id
+    });
+    
+    try {
+      const response = await fetch(
+        `${BACKEND_URL}/api/webhooks?${deleteParams.toString()}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (response.status === 204) {
+        console.log("Webhook deleted successfully");
+        setWebhooks(webhooks => webhooks.filter(w => w.id !== webhook.id));
+      } else {
+        const data = await response.json();
+        if (data.error) {
+          console.error("Error deleting webhook:", data.error);
+          // TODO: Inform the user of the error.
+        } else {
+          console.log("Received unexpected data:", data);
+        }
+      }
+    } catch (error) {
+      console.error("Exception when calling delete:", error);
+      // TODO: Inform the user there was a problem processing the deletion.
+    }
+};
+
 
   const handleBack = () => {
     setPage(3);
@@ -641,9 +677,6 @@ const ViewWebhooks: React.FC<ViewWebhookProps> = ({
   const fetchWebhooks = async () => {
     setIsLoading(true);
 
-    if (!selectedSite) {
-      return;
-    }
     const params = new URLSearchParams({
       auth: token,
       siteId: selectedSite.id,
@@ -689,7 +722,7 @@ const ViewWebhooks: React.FC<ViewWebhookProps> = ({
                 key={webhook.id}
                 className="flex justify-between items-center py-2"
               >
-                <span>{webhook.id}</span>
+                <span>{webhook.filter.formName}</span>
                 <button
                   onClick={() => handleDelete(webhook)}
                   className="py-2 px-4 hover:bg-red-600 bg-red-500 text-white rounded-md"

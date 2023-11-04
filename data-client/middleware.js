@@ -18,7 +18,7 @@ export async function middleware(request){
     return new NextResponse(null, {
       headers: {
         'Access-Control-Allow-Origin': "*",
-        'Access-Control-Allow-Methods': 'GET',
+        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
         'Access-Control-Allow-Headers': 'Content-Type',
       },
     });
