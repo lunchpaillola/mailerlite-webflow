@@ -27,6 +27,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["config/next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "icons/Closedefault1/Closedefault1.jsx"],
+  "include": ["config/next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/icons/Closedefault1/Closedefault1.jsx"],
   "exclude": ["node_modules"]
 }
