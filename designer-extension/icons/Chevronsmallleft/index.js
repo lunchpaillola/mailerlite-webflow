@@ -1,0 +1,1 @@
+export { Chevronsmallleft } from "./Chevronsmallleft";

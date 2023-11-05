@@ -1,0 +1,149 @@
+.icon-button {
+ align-items: center;
+ display: inline-flex;
+ gap: 4px;
+ justify-content: center;
+ position: relative;
+}
+
+.icon-button .more-1 {
+ height: 16px !important;
+ position: relative !important;
+ width: 16px !important;
+}
+
+.icon-button .focus {
+ border: 1px solid;
+ border-color: var(--colors-blue-blueborder);
+ left: -2px;
+ position: absolute;
+ top: -2px;
+}
+
+.icon-button.danger {
+ box-shadow: var(--boxshadows-action-colored);
+}
+
+.icon-button.primary {
+ box-shadow: var(--boxshadows-action-colored);
+}
+
+.icon-button.comfortable {
+ padding: 4px;
+}
+
+.icon-button.is-disabled-true {
+ opacity: 0.4;
+}
+
+.icon-button.compact {
+ border-radius: 2px;
+}
+
+.icon-button.is-disabled-true.outline {
+ border-color: var(--colors-border-actionsecondaryborder);
+}
+
+.icon-button.ghost.comfortable {
+ border-radius: var(--app-variables-border-radius);
+}
+
+.icon-button.is-focused-true.danger {
+ background-color: var(--colors-red-redbackground);
+}
+
+.icon-button.is-focused-false.outline {
+ border: 1px solid;
+}
+
+.icon-button.is-hovered-false.outline {
+ border-color: var(--colors-border-actionsecondaryborder);
+}
+
+.icon-button.solid.comfortable {
+ box-shadow: var(--boxshadows-action-colored);
+}
+
+.icon-button.is-disabled-false.comfortable {
+ border-radius: var(--app-variables-border-radius);
+}
+
+.icon-button.is-focused-true.primary {
+ background-color: var(--colors-action-actionprimarybackground);
+}
+
+.icon-button.is-hovered-false.danger {
+ background-color: var(--colors-red-redbackground);
+}
+
+.icon-button.is-hovered-false.primary {
+ background-color: var(--colors-action-actionprimarybackground);
+}
+
+.icon-button.is-disabled-true.danger {
+ background-color: var(--colors-red-redbackground);
+}
+
+.icon-button.is-disabled-true.primary {
+ background-color: var(--colors-action-actionprimarybackground);
+}
+
+.icon-button.is-disabled-true.solid.default {
+ background: linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.1) 100%);
+}
+
+.icon-button.comfortable.is-disabled-true.outline {
+ border-radius: 4px;
+}
+
+.icon-button.is-focused-true.solid.default {
+ background: linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.1) 100%);
+}
+
+.icon-button.is-disabled-true.solid.comfortable {
+ border-radius: 4px;
+}
+
+.icon-button.compact.solid.default {
+ box-shadow: var(--boxshadows-action-secondary);
+}
+
+.icon-button.is-hovered-false.solid.default {
+ background: linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.1) 100%);
+}
+
+.icon-button.is-focused-false.is-disabled-false.danger.is-hovered-true {
+ background-color: var(--colors-red-redbackgroundhover);
+}
+
+.icon-button.is-focused-false.is-disabled-false.primary.is-hovered-true {
+ background-color: var(--colors-action-actionprimarybackgroundhover);
+}
+
+.icon-button.is-focused-false.is-disabled-false.is-hovered-true.outline {
+ border-color: var(--colors-border-actionsecondaryborderhover);
+}
+
+.icon-button.comfortable.is-hovered-true.is-focused-false.is-disabled-false.ghost {
+ background: linear-gradient(180deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.16) 100%);
+}
+
+.icon-button.is-hovered-true.is-focused-false.is-disabled-false.solid.default {
+ background: linear-gradient(180deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.16) 100%);
+}
+
+.icon-button.is-hovered-true.compact.is-focused-false.is-disabled-false.ghost {
+ background: linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.1) 100%);
+}
+
+.icon-button.compact .focus {
+ border-radius: 3px;
+ height: 20px;
+ width: 20px;
+}
+
+.icon-button.comfortable .focus {
+ border-radius: 5px;
+ height: 28px;
+ width: 28px;
+}

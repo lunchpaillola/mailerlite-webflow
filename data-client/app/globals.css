@@ -2,6 +2,118 @@
 @tailwind components;
 @tailwind utilities;
 
+.root {
+  /* Webflow colors */
+  --background1: #1e1e1e;
+  --background2: #2e2e2e;
+  --background3: #383838;
+  --background4: #373737;
+  --background5: #444444;
+  --backgroundInactive: #2e2e2e;
+  --backgroundInverse: #ebebeb;
+  --backgroundInput: rgba(0, 0, 0, 0.15);
+
+  --actionPrimaryBackground: #006acc;
+  --actionPrimaryBackgroundHover: #187cd9;
+  --actionSecondaryBackground: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.12) 0%,
+    rgba(255, 255, 255, 0.1) 100%
+  );
+  --actionSecondaryBackgroundHover: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.18) 0%,
+    rgba(255, 255, 255, 0.16) 100%
+  );
+  --actionPrimaryText: #ffffff;
+  --actionPrimaryTextHover: #ffffff;
+  --actionSecondaryText: #e0e0e0;
+  --actionSecondaryTextHover: #e0e0e0;
+
+  --border1: rgba(255, 255, 255, 0.13);
+  --border2: rgba(255, 255, 255, 0.14);
+  --border3: rgba(255, 255, 255, 0.19);
+
+  --text1: #f5f5f5;
+  --text2: #bdbdbd;
+  --text3: #a3a3a3;
+  --textInactive: #757575;
+  --textInverse: #1e1e1e;
+
+  --blueText: #8ac2ff;
+  --blueIcon: #8ac2ff;
+  --blueBorder: #007df0;
+
+  --greenBackground: #007a41;
+  --greenBackgroundHover: #0d8a4f;
+  --greenText: #63d489;
+  --greenIcon: #63d489;
+  --greenBorder: #259d4d;
+
+  --yellowBackground: #946b00;
+  --yellowBackgroundHover: #af7f00;
+  --yellowText: #f3c831;
+  --yellowIcon: #f3c831;
+  --yellowBorder: #d7a220;
+
+  --redBackground: #cf313b;
+  --redBackgroundHover: #cb3535;
+  --redText: #ff8a8a;
+  --redIcon: #ff8a8a;
+  --redBorder: #e42f3a;
+
+  --orangeBackground: #bf4704;
+  --orangeBackgroundHover: #DC95616;
+  --orangeText: #eba267;
+  --orangeIcon: #eba267;
+  --orangeBorder: #df640c;
+
+  --purpleBackground: #734ce0;
+  --purpleBackgroundHover: #815beb;
+  --purpleText: #b89eff;
+  --purpleIcon: #b89eff;
+  --purpleBorder: #875ffd;
+
+  /* Box shadows for buttons and inputs */
+  --boxShadows-action-colored: 0px 0.5px 1px 0px rgba(0, 0, 0, 0.8),
+    0px 0.5px 0.5px 0px rgba(255, 255, 255, 0.2) inset;
+  --boxShadows-action-secondary: 0px 0.5px 1px rgba(0, 0, 0, 0.8),
+    inset 0px 0.5px 0.5px rgba(255, 255, 255, 0.12);
+  --boxShadows-input-inner: 0px 1px 1px -1px rgba(0, 0, 0, 0.13) inset,
+    0px 3px 3px -3px rgba(0, 0, 0, 0.17) inset,
+    0px 4px 4px -4px rgba(0, 0, 0, 0.17) inset,
+    0px 8px 8px -8px rgba(0, 0, 0, 0.17) inset,
+    0px 12px 12px -12px rgba(0, 0, 0, 0.13) inset,
+    0px 16px 16px -16px rgba(0, 0, 0, 0.13) inset;
+
+  --boxShadows-menu: 0px 0.5px 0.5px 0px rgba(255, 255, 255, 0.12) inset,
+    0px 12px 24px 8px rgba(0, 0, 0, 0.04), 0px 8px 16px 4px rgba(0, 0, 0, 0.04),
+    0px 4px 8px 2px rgba(0, 0, 0, 0.04), 0px 2px 6px 0px rgba(0, 0, 0, 0.04),
+    0px 0px 1px 0px rgba(0, 0, 0, 0.25);
+
+  --input-inner-shadow: 0px 1px 1px -1px rgba(0, 0, 0, 0.13) inset,
+    0px 3px 3px -3px rgba(0, 0, 0, 0.17) inset,
+    0px 4px 4px -4px rgba(0, 0, 0, 0.17) inset,
+    0px 8px 8px -8px rgba(0, 0, 0, 0.17) inset,
+    0px 12px 12px -12px rgba(0, 0, 0, 0.13) inset,
+    0px 16px 16px -16px rgba(0, 0, 0, 0.13) inset;
+
+  --menu-shadow: 0px 12px 24px 8px rgba(0, 0, 0, 0.08),
+    0px 8px 16px 4px rgba(0, 0, 0, 0.08), 0px 4px 8px 2px rgba(0, 0, 0, 0.08),
+    0px 2px 6px 0px rgba(0, 0, 0, 0.08),
+    0px -0.5px 0.5px 0px rgba(0, 0, 0, 0.12) inset,
+    0px 0.5px 0.5px 0px rgba(255, 255, 255, 0.12) inset;
+
+  /* TYPOGRAPHY */
+  --font-stack: "Inter", sans-serif;
+  --font-size-small: 11.5px;
+  --font-size-small-letter-spacing: -0.115px;
+  --font-size-large: 12.5px;
+  --font-weight-normal: 400;
+  --font-weight-medium: 600;
+  --border-radius: 4px;
+}
+
 @layer components {
   .card {
     transform: rotateY(180deg);
