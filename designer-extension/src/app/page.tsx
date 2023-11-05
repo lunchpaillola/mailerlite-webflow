@@ -1,124 +1,30 @@
 "use client";
 import { motion } from "framer-motion"; // For animations
 import React, { useEffect, useState } from "react";
-import { Webhook } from "webflow-api/dist/api";
+import {
+  Site,
+  WebflowFormFields,
+  FieldObject,
+  FieldArrayItem,
+  FieldsArray,
+  MailerliteFields,
+  MailerliteGroups,
+  ConfigureMailerLiteProps,
+  SelectFormProps,
+  SelectDomainProps,
+  ViewWebhookProps,
+  WebhookProps,
+  LoginProps,
+  Field,
+  Form,
+  Domain
+
+} from "./types/globalTypes";
 // import Image from "next/image";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
-interface Site {
-  id: string;
-  shortName: string;
-}
 
-interface WebflowFormFields {
-  displayName: string;
-  id: string;
-}
-
-interface FieldObject {
-  displayName: string;
-  placeholder: string;
-  type: string;
-  userVisible: boolean;
-}
-
-type FieldArrayItem = Array<string | FieldObject>;
-
-type FieldsArray = FieldArrayItem[];
-
-//removing for now will expand MailerLite fields later...
-interface MailerliteFields {
-  id: string;
-  name: string;
-  key: string;
-}
-
-interface MailerliteGroups {
-  id: string;
-  name: string;
-}
-
-interface ConfigureMailerLiteProps {
-  setSelectedForm: any;
-  selectedForm: any;
-  setPage: any;
-  token: string;
-  domain: Domain | null;
-  selectedSite: Site | null;
-}
-
-interface SelectFormProps {
-  setSelectedForm: any;
-  selectedForm: any;
-  setPage: any;
-  token: string;
-  domain: Domain | null;
-  selectedSite: Site | null;
-}
-
-interface SelectDomainProps {
-  setPage: any;
-  token: string;
-  selectedDomain: any;
-  setSelectedDomain: any;
-  selectedSite: Site | null;
-}
-
-interface ViewWebhookProps {
-  setPage: any;
-  token: string;
-  selectedSite: Site | null;
-}
-
-interface WebhookProps {
-  id: string;
-  triggerType: string;
-  siteId: string;
-  workspaceId: string;
-  filter: { formId: string, formName: string,};
-  lastTriggered: Date;
-  createdOn: Date;
-  url: string;
-}
-
-interface LoginProps {
-  setPage: any;
-  token: any;
-  setToken: any;
-}
-interface Field {
-  [key: string]: {
-    displayName: string;
-    type: string;
-    placeholder: string;
-    userVisible: boolean;
-  };
-}
-
-interface Form {
-  id: string;
-  displayName: string;
-  siteId: string;
-  workspaceId?: string;
-  siteDomainId?: string;
-  pageId?: string;
-  pageName?: string;
-  responseSettings: {
-    sendEmailConfirmation: boolean;
-    redirectUrl: string;
-    redirectMethod: string;
-    redirectAction?: string;
-  };
-  fields: Field[];
-  createdOn: string;
-  lastUpdated: string;
-}
-
-interface Domain {
-  id: string;
-  url: string;
-}
 
 const MainPage: React.FC = () => {
   const [page, setPage] = useState(0);
@@ -455,7 +361,6 @@ const ConfigureMailerlite: React.FC<ConfigureMailerLiteProps> = ({
 
   const mKey = String(process.env.MAILERLITE_API_KEY);
 
-
   const fetchMailerlite = async () => {
     setIsLoading(true);
 
@@ -574,7 +479,10 @@ const ConfigureMailerlite: React.FC<ConfigureMailerLiteProps> = ({
                     Select Email Field
                   </option>
                   {webflowFormFields.map((webflowField) => (
-                    <option key={webflowField.id} value={webflowField.displayName}>
+                    <option
+                      key={webflowField.id}
+                      value={webflowField.displayName}
+                    >
                       {webflowField.displayName}
                     </option>
                   ))}
@@ -621,7 +529,6 @@ const ViewWebhooks: React.FC<ViewWebhookProps> = ({
 }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [webhooks, setWebhooks] = useState<WebhookProps[]>([]);
-  
 
   useEffect(() => {
     fetchWebhooks();
@@ -630,15 +537,14 @@ const ViewWebhooks: React.FC<ViewWebhookProps> = ({
   if (!selectedSite) {
     return;
   }
-  
 
   const handleDelete = async (webhook: WebhookProps) => {
     console.log("Attempting to delete webhook:", webhook.id);
     const deleteParams = new URLSearchParams({
       auth: token,
-      webhookId: webhook.id
+      webhookId: webhook.id,
     });
-    
+
     try {
       const response = await fetch(
         `${BACKEND_URL}/api/webhooks?${deleteParams.toString()}`,
@@ -649,7 +555,7 @@ const ViewWebhooks: React.FC<ViewWebhookProps> = ({
 
       if (response.status === 204) {
         console.log("Webhook deleted successfully");
-        setWebhooks(webhooks => webhooks.filter(w => w.id !== webhook.id));
+        setWebhooks((webhooks) => webhooks.filter((w) => w.id !== webhook.id));
       } else {
         const data = await response.json();
         if (data.error) {
@@ -663,8 +569,7 @@ const ViewWebhooks: React.FC<ViewWebhookProps> = ({
       console.error("Exception when calling delete:", error);
       // TODO: Inform the user there was a problem processing the deletion.
     }
-};
-
+  };
 
   const handleBack = () => {
     setPage(3);

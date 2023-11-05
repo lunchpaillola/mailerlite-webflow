@@ -1,29 +1,8 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import { ViewWebhookProps, WebhookProps } from "../types/globalTypes";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
-
-interface ViewWebhookProps {
- setPage: any;
- token: string;
- selectedSite: Site | null;
-}
-
-interface WebhookProps {
- id: string;
- triggerType: string;
- siteId: string;
- workspaceId: string;
- filter: { formId: string, formName: string,};
- lastTriggered: Date;
- createdOn: Date;
- url: string;
-}
-
-interface Site {
- id: string;
- shortName: string;
-}
 
 const ViewWebhooks: React.FC<ViewWebhookProps> = ({
  token,
