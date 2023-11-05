@@ -574,7 +574,7 @@ const ConfigureMailerlite: React.FC<ConfigureMailerLiteProps> = ({
                     Select Email Field
                   </option>
                   {webflowFormFields.map((webflowField) => (
-                    <option key={webflowField.id} value={webflowField.id}>
+                    <option key={webflowField.id} value={webflowField.displayName}>
                       {webflowField.displayName}
                     </option>
                   ))}

@@ -1,11 +1,6 @@
-import { getAPIClient } from '@/utils/webflow_helper';
 import { NextResponse } from 'next/server';
-import { pipeline } from 'stream';
-import { promisify } from 'util';
 import MailerLite from '@mailerlite/mailerlite-nodejs';
-
-
-const pipelineAsync = promisify(pipeline);
+const apiKey = process.env.MAILERLITE_API_KEY;
 
 /**
  * An asynchronous function that handles POST requests. 
@@ -28,9 +23,12 @@ const pipelineAsync = promisify(pipeline);
 
 //from the webhook will publish for mailierte 
 export async function POST(request) {
-  const {siteId, auth } = await request.json();
-  if ( !siteId || !auth) {
-    return NextResponse.json({ error: 'Missing siteId or auth' }, {
+  const { searchParams } = new URL(request.url);
+  const email = searchParams.get("email");
+  const group = searchParams.get("group");
+  
+  if (!group || !email) {
+    return NextResponse.json({ error: 'incomplete webhook' }, {
       headers: {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Methods': 'POST',
@@ -38,21 +36,39 @@ export async function POST(request) {
       },
     });
   }
-  const webflowAPI = getAPIClient(auth);
 
-  try {
-
-    console.log('hello')
-    
-  } catch (error) {
-    return NextResponse.json({ error: error.message });
+  const payload = await request.json();
+  
+  // Validate the structure of the payload (consider expanding this)
+  if (!payload.payload || !payload.payload.data || !(email in payload.payload.data)) {
+    return NextResponse.json({ error: 'invalid payload structure' });
   }
+
+  const submittedEmail = payload.payload.data[email];
+  const mailerlite = new MailerLite({
+    api_key: apiKey
+  });
+  
+  // Using promise-based approach
+  return mailerlite.subscribers.createOrUpdate({
+    email: submittedEmail,
+    groups: [group],
+    status: "active", 
+  })
+  .then(response => {
+    console.log(response.data);
+    return NextResponse.json({ success: true });
+  })
+  .catch(error => {
+    console.error(error.response ? error.response.data : error.message);
+    return NextResponse.json({ error: 'Failed to process webhook' });
+  });
 }
+
 
 
 // Get fields from Mailerlite
 export async function GET(request) {
-  const apiKey = process.env.MAILERLITE_API_KEY;
 
   // Commented out for now as it's not being used
   // const { searchParams } = new URL(request.url);
