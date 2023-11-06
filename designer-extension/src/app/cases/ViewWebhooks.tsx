@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { ViewWebhookProps, WebhookProps } from "../types/globalTypes";
+import "./style.css";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 

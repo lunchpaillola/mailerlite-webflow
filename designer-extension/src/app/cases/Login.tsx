@@ -2,6 +2,7 @@
 import React from "react";
 import { motion } from "framer-motion"; // For animations
 import { LoginProps } from "../types/globalTypes";
+import "./style.css";
 
 const Login: React.FC<LoginProps> = ({
   setPage,

@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { SelectFormProps, Form } from "../types/globalTypes";
+import "./style.css";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
@@ -52,7 +53,7 @@ const SelectForm: React.FC<SelectFormProps> = ({
 
      if (data.forms.forms && domain) {
        const filteredForms = data.forms.forms.filter(
-         (form: { siteDomainId: any }) => form.siteDomainId === domain.id
+         (form: { siteDomainId: any }) => form.siteDomainId === domain
        );
        setForms(filteredForms);
      }
@@ -74,7 +75,7 @@ const SelectForm: React.FC<SelectFormProps> = ({
              Select a Form
            </h1>
            <p className="text-sm mb-4">
-             Select a form on domain, {domain?.url}, to connect to Mailerlite
+             Select a form to connect to Mailerlite
            </p>
            <ul>
              {forms.map((form, index) => (

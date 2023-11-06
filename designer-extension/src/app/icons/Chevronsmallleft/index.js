@@ -1,1 +1,1 @@
-export { Chevronsmallleft } from "./Chevronsmallleft";
+export { Chevronsmallleft } from "./Chevronsmallleft.jsx";

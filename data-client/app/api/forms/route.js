@@ -68,6 +68,7 @@ export async function GET(request) {
 
   try {
     const response = await webflowAPI.get(`/sites/${siteId}/forms`);
+    console.log('respose.data', response.data);
     return NextResponse.json({ forms: response.data }, {
       headers: {
         'Access-Control-Allow-Origin': '*',
