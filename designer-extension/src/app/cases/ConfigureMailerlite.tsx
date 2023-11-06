@@ -87,7 +87,6 @@ const ConfigureMailerlite: React.FC<ConfigureMailerLiteProps> = ({
 
   const handleConfirm = async () => {
     try {
-      console.log("at the try the selectedForm");
       const webhookParams = new URLSearchParams({
         fieldConnection: JSON.stringify(fieldConnections),
         siteId: selectedSite ? selectedSite.id : "none",
@@ -95,13 +94,6 @@ const ConfigureMailerlite: React.FC<ConfigureMailerLiteProps> = ({
         formId: selectedForm.id,
         formName: selectedForm.displayName,
       });
-
-      console.log("webhookparams", webhookParams);
-      console.log(
-        "url",
-        `${BACKEND_URL}/api/webhooks?${webhookParams.toString()}`
-      );
-
       const response = await fetch(
         `${BACKEND_URL}/api/webhooks?${webhookParams.toString()}`,
         {
@@ -125,9 +117,6 @@ const ConfigureMailerlite: React.FC<ConfigureMailerLiteProps> = ({
   return (
     <div className="flex flex-col items-center justify-center py-4 px-4 bg-wf-gray text-wf-lightgray h-screen overflow-auto">
       <div className="text-center space-y-4 flex flex-col h-full justify-between pb-2">
-        {isLoading ? (
-          <div>Loading...</div>
-        ) : (
           <>
             <div>
             <div className="flex justify-start fixed top-2">
@@ -136,7 +125,7 @@ const ConfigureMailerlite: React.FC<ConfigureMailerLiteProps> = ({
                 setPage(2);
               }}
               className="text-sm font-regular text-left"
-              style={{ color: "#8AC2FF" }}
+              style={{ color: "#fff" }}
             >
               <span className="inline-block">{"<"}</span>{" "}
               Back
@@ -209,7 +198,7 @@ const ConfigureMailerlite: React.FC<ConfigureMailerLiteProps> = ({
               <button
                 onClick={() => handleConfirm()}
                 style={{
-                  backgroundColor: "#0b71ce",
+                  backgroundColor: "#1f2de6",
                   color: "white",
                   padding: "8px 16px",
                   borderRadius: "4px",
@@ -222,7 +211,6 @@ const ConfigureMailerlite: React.FC<ConfigureMailerLiteProps> = ({
               </button>
               </div>
           </>
-        )}
       </div>
     </div>
   );

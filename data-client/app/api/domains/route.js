@@ -40,8 +40,6 @@ export async function POST(request) {
   const webflowAPI = getAPIClient(auth);
 
   try {
-
-    console.log('hello')
     
   } catch (error) {
     return NextResponse.json({ error: error.message });

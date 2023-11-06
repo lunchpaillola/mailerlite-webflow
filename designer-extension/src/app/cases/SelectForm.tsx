@@ -72,9 +72,6 @@ const SelectForm: React.FC<SelectFormProps> = ({
   return (
     <div className="flex flex-col items-center justify-center py-4 px-4 bg-wf-gray text-wf-lightgray h-screen overflow-auto">
       <div className="text-center space-y-4 flex flex-col h-full justify-between pb-2">
-        {isLoading ? (
-          <div>Loading...</div>
-        ) : (
           <>
           <div>
           <div className="flex justify-start fixed top-2">
@@ -83,7 +80,7 @@ const SelectForm: React.FC<SelectFormProps> = ({
                 setPage(1);
               }}
               className="text-sm font-regular text-left"
-              style={{ color: "#8AC2FF" }}
+              style={{ color: "#fff" }}
             >
               <span className="inline-block">{"<"}</span>{" "}
               Back
@@ -120,7 +117,7 @@ const SelectForm: React.FC<SelectFormProps> = ({
             <button
               onClick={() => handleFormClick(selectedForm)}
               style={{
-                backgroundColor: "#0b71ce",
+                backgroundColor: "#1f2de6",
                 color: "white",
                 padding: "8px 16px",
                 borderRadius: "4px",
@@ -133,7 +130,6 @@ const SelectForm: React.FC<SelectFormProps> = ({
             </button>
           </div>
           </>
-        )}
       </div>
     </div>
   );

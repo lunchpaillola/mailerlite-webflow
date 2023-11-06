@@ -22,7 +22,6 @@ const ViewWebhooks: React.FC<ViewWebhookProps> = ({
   }
 
   const handleDelete = async (webhook: WebhookProps) => {
-    console.log("Attempting to delete webhook:", webhook.id);
     const deleteParams = new URLSearchParams({
       auth: token,
       webhookId: webhook.id,
@@ -80,7 +79,6 @@ const ViewWebhooks: React.FC<ViewWebhookProps> = ({
 
       const data = await response.json();
       if (data.webhooks) {
-        console.log("webhooks", data.webhooks.webhooks);
         setWebhooks(data.webhooks.webhooks);
       }
     } catch (error) {
@@ -103,7 +101,7 @@ const ViewWebhooks: React.FC<ViewWebhookProps> = ({
                 setPage(3);
               }}
               className="text-sm font-regular text-left"
-              style={{ color: "#8AC2FF" }}
+              style={{ color: "#fff" }}
             >
               <span className="inline-block">{"<"}</span> Back
             </button>
@@ -145,7 +143,7 @@ const ViewWebhooks: React.FC<ViewWebhookProps> = ({
               <button
                 onClick={() => handleConnectNew()}
                 style={{
-                  backgroundColor: "#0b71ce",
+                  backgroundColor: "#1f2de6",
                   color: "white",
                   padding: "8px 16px",
                   borderRadius: "4px",

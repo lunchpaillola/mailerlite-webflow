@@ -24,30 +24,6 @@ const pipelineAsync = promisify(pipeline);
  * @throws Will throw an error if the 'imageURL' or 'siteId' is missing in the request, if there's an HTTP error when fetching the image, or if the upload to Webflow fails.
  */
 
-//Create a webflow hook
-export async function POST(request) {
-  const {siteId, auth } = await request.json();
-  if ( !siteId || !auth) {
-    return NextResponse.json({ error: 'Missing siteId or auth' }, {
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'POST',
-        'Access-Control-Allow-Headers': 'Content-Type',
-      },
-    });
-  }
-  const webflowAPI = getAPIClient(auth);
-
-  try {
-
-    console.log('hello')
-    
-  } catch (error) {
-    return NextResponse.json({ error: error.message });
-  }
-}
-
-
 // Get forms from Webflow
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
@@ -68,7 +44,6 @@ export async function GET(request) {
 
   try {
     const response = await webflowAPI.get(`/sites/${siteId}/forms`);
-    console.log('respose.data', response.data);
     return NextResponse.json({ forms: response.data }, {
       headers: {
         'Access-Control-Allow-Origin': '*',

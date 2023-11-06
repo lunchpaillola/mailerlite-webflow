@@ -20,10 +20,8 @@ const SelectDomain: React.FC<SelectDomainProps> = ({
   }, [selectedSite]);
 
   const handleDomainClick = (domain: Domain) => {
-    console.log("selectedDomain 2", selectedDomain);
     setSelectedDomain(domain);
     setPage(2);
-    console.log("selectedDomain 1", selectedDomain);
   };
 
   const fetchDomains = async () => {
@@ -90,7 +88,7 @@ const SelectDomain: React.FC<SelectDomainProps> = ({
                 setPage(0);
               }}
               className="text-sm font-regular text-left"
-              style={{ color: "#8AC2FF" }}
+              style={{ color: "#fff" }}
             >
               <span className="inline-block">{"<"}</span>{" "}
               Back
@@ -128,7 +126,7 @@ const SelectDomain: React.FC<SelectDomainProps> = ({
               <button
                 onClick={() => handleDomainClick(selectedDomain)}
                 style={{
-                  backgroundColor: "#0b71ce",
+                  backgroundColor: "#1f2de6",
                   color: "white",
                   padding: "8px 16px",
                   borderRadius: "4px",

@@ -30,7 +30,6 @@ export async function GET(request) {
   const auth = searchParams.get("auth");
 
   if (!auth) {
-    console.log("error");
     return NextResponse.json(
       { ok: false, error: "Not authenticated" },
       {
@@ -72,8 +71,6 @@ export async function POST(request) {
   const formId = searchParams.get("formId");
   const formName = searchParams.get("formName");
 
-  console.log(formId, formName)
-
   const params = new URLSearchParams({
     email: fieldConnection.email,
     group: fieldConnection.group,
@@ -105,7 +102,6 @@ export async function POST(request) {
         formName: formName,
       },
     });
-    console.log('response.data', response.data);
     return NextResponse.json(
       { webhooks: response.data },
       {
@@ -123,11 +119,9 @@ export async function POST(request) {
 }
 
 export async function DELETE(request) {
-  console.log("delete");
   const { searchParams } = new URL(request.url);
   const auth = searchParams.get("auth");
   const webhookId = searchParams.get("webhookId");
-  console.log(webhookId, auth);
 
   if (!auth) {
     console.log("error");
@@ -147,7 +141,6 @@ export async function DELETE(request) {
 
   try {
     const response = await webflowAPI.delete(`webhooks/${webhookId}`);
-    console.log("deleting the webhooks", response.data);
 
     // Create a response with a 204 status code to indicate success with no content.
     return new NextResponse(null, {

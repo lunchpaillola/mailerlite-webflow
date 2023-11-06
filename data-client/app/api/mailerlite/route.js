@@ -56,7 +56,6 @@ export async function POST(request) {
     status: "active", 
   })
   .then(response => {
-    console.log(response.data);
     return NextResponse.json({ success: true });
   })
   .catch(error => {
