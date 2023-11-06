@@ -20,10 +20,10 @@ const SelectDomain: React.FC<SelectDomainProps> = ({
   }, [selectedSite]);
 
   const handleDomainClick = (domain: Domain) => {
-    console.log('selectedDomain 2', selectedDomain);
+    console.log("selectedDomain 2", selectedDomain);
     setSelectedDomain(domain);
     setPage(2);
-    console.log('selectedDomain 1', selectedDomain);
+    console.log("selectedDomain 1", selectedDomain);
   };
 
   const fetchDomains = async () => {
@@ -71,8 +71,10 @@ const SelectDomain: React.FC<SelectDomainProps> = ({
 
   const handleDropdownChange = (event: { target: { value: any } }) => {
     const selectedValue = event.target.value;
-    setSelectedDomain(selectedValue);
+    const matchedDomain = domains.find((domain) => domain.id === selectedValue);
+    setSelectedDomain(matchedDomain);
   };
+
 
   return (
     <div className="flex flex-col items-center justify-center py-4 px-4 bg-wf-gray text-wf-lightgray h-screen overflow-auto">
@@ -81,18 +83,29 @@ const SelectDomain: React.FC<SelectDomainProps> = ({
           <div>Loading...</div>
         ) : (
           <>
-            <div>
-              <h1 className="text-lg font-bold text-gray-200 mb-8 mt-8">
+          <div>
+          <div className="flex justify-start fixed top-2">
+            <button
+              onClick={() => {
+                setPage(0);
+              }}
+              className="text-sm font-regular text-left"
+              style={{ color: "#8AC2FF" }}
+            >
+              <span className="inline-block">{"<"}</span>{" "}
+              Back
+            </button>
+            </div>
+              <h1 className="text-md font-medium text-left text-gray-200 mb-2 mt-4">
                 Select Domain
               </h1>
-              <p className="text-sm mb-8">
-                Multiple domains are linked to your Webflow site. Please select
-                the domain from which you would like to send forms to
-                MailerLite. You can set up multiple domains later.
+              <p className="text-sm text-left text-gray-400 mb-8">
+                You can set up multiple domains later.
               </p>
               <div className="mb-8">
                 <select
-                  value={selectedDomain}
+                  required
+                  value={selectedDomain?.id || ""}
                   onChange={handleDropdownChange}
                   style={{
                     backgroundColor: "#383838",
@@ -112,9 +125,7 @@ const SelectDomain: React.FC<SelectDomainProps> = ({
                   ))}
                 </select>
               </div>
-              {/* Conditionally render the confirm button */}
-              {selectedDomain && (
-                <button
+              <button
                 onClick={() => handleDomainClick(selectedDomain)}
                 style={{
                   backgroundColor: "#0b71ce",
@@ -128,14 +139,12 @@ const SelectDomain: React.FC<SelectDomainProps> = ({
               >
                 Confirm
               </button>
-              )}
             </div>
           </>
         )}
       </div>
     </div>
   );
-  
 };
 
 export default SelectDomain;

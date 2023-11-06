@@ -5,97 +5,138 @@ import "./style.css";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
-
 const SelectForm: React.FC<SelectFormProps> = ({
- token,
- selectedSite,
- setPage,
- domain,
- setSelectedForm,
- selectedForm,
+  token,
+  selectedSite,
+  setPage,
+  domain,
+  setSelectedForm,
+  selectedForm,
 }) => {
- const [isLoading, setIsLoading] = useState<boolean>(false);
- const [forms, setForms] = useState<Form[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [forms, setForms] = useState<Form[]>([]);
 
- useEffect(() => {
-   fetchForms();
- }, [selectedSite]);
+  useEffect(() => {
+    fetchForms();
+  }, [selectedSite]);
 
- const handleFormClick = (form: Form) => {
-   setSelectedForm(form);
-   setPage(3);
- };
+  const handleFormClick = (form: Form) => {
+    setSelectedForm(form);
+    setPage(3);
+  };
 
- const fetchForms = async () => {
-   setIsLoading(true);
+  const fetchForms = async () => {
+    setIsLoading(true);
 
-   if (!selectedSite) {
-     return;
-   }
-   const params = new URLSearchParams({
-     auth: token,
-     siteId: selectedSite.id,
-   });
+    if (!selectedSite) {
+      return;
+    }
+    const params = new URLSearchParams({
+      auth: token,
+      siteId: selectedSite.id,
+    });
 
-   try {
-     const response = await fetch(
-       `${BACKEND_URL}/api/forms?${params.toString()}`,
-       {
-         method: "GET",
-       }
-     );
+    try {
+      const response = await fetch(
+        `${BACKEND_URL}/api/forms?${params.toString()}`,
+        {
+          method: "GET",
+        }
+      );
 
-     if (!response.ok) {
-       throw new Error(`HTTP error! status: ${response.status}`);
-     }
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
 
-     const data = await response.json();
+      const data = await response.json();
 
-     if (data.forms.forms && domain) {
-       const filteredForms = data.forms.forms.filter(
-         (form: { siteDomainId: any }) => form.siteDomainId === domain
-       );
-       setForms(filteredForms);
-     }
-   } catch (error) {
-     console.error("Error:", error);
-   } finally {
-     setIsLoading(false);
-   }
- };
+      if (data.forms.forms && domain) {
+        const filteredForms = data.forms.forms.filter(
+          (form: { siteDomainId: any }) => form.siteDomainId === domain.id
+        );
+        setForms(filteredForms);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
- return (
-   <div className="flex flex-col items-center justify-center py-2 px-2 bg-wf-gray text-wf-lightgray h-screen overflow-auto">
-     <div className="text-center space-y-4 flex flex-col h-full justify-between pb-2">
-       {isLoading ? (
-         <div>Loading...</div>
-       ) : (
-         <div>
-           <h1 className="text-lg font-bold text-gray-200 mb-2 mt-2">
-             Select a Form
-           </h1>
-           <p className="text-sm mb-4">
-             Select a form to connect to Mailerlite
-           </p>
-           <ul>
-             {forms.map((form, index) => (
-               <li key={index} className="border-b border-gray-600">
-                 <button
-                   onClick={() => handleFormClick(form)}
-                   className={`py-2 px-4 w-full text-left ${
-                     form === selectedForm ? "bg-gray-700 text-white" : ""
-                   }`}
-                 >
-                   {form.displayName}
-                 </button>
-               </li>
-             ))}
-           </ul>
-         </div>
-       )}
-     </div>
-   </div>
- );
+  const handleDropdownChange = (event: { target: { value: any } }) => {
+    const selectedValue = event.target.value;
+    const matchedForm = forms.find((form) => form.id === selectedValue);
+    setSelectedForm(matchedForm);
+  };
+
+  return (
+    <div className="flex flex-col items-center justify-center py-4 px-4 bg-wf-gray text-wf-lightgray h-screen overflow-auto">
+      <div className="text-center space-y-4 flex flex-col h-full justify-between pb-2">
+        {isLoading ? (
+          <div>Loading...</div>
+        ) : (
+          <>
+          <div>
+          <div className="flex justify-start fixed top-2">
+            <button
+              onClick={() => {
+                setPage(1);
+              }}
+              className="text-sm font-regular text-left"
+              style={{ color: "#8AC2FF" }}
+            >
+              <span className="inline-block">{"<"}</span>{" "}
+              Back
+            </button>
+            </div>
+            <h1 className="text-md font-medium text-left text-gray-200 mb-2 mt-4">
+              Select a Form
+            </h1>
+            <p className="text-sm mb-4 text-left text-gray-400">
+              Select a form to connect to Mailerlite
+            </p>
+            <div className="mb-8">
+              <select
+                value={selectedForm?.id || ""}
+                onChange={handleDropdownChange}
+                style={{
+                  backgroundColor: "#383838",
+                  color: "white",
+                  padding: "8px 16px",
+                  borderRadius: "4px",
+                  outline: "none",
+                  width: "100%",
+                  boxSizing: "border-box",
+                }}
+              >
+                <option value="">Select a form</option>
+                {forms.map((form, index) => (
+                  <option key={index} value={form.id}>
+                    {form.displayName}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <button
+              onClick={() => handleFormClick(selectedForm)}
+              style={{
+                backgroundColor: "#0b71ce",
+                color: "white",
+                padding: "8px 16px",
+                borderRadius: "4px",
+                outline: "none",
+                width: "100%",
+                boxSizing: "border-box",
+              }}
+            >
+              Confirm
+            </button>
+          </div>
+          </>
+        )}
+      </div>
+    </div>
+  );
 };
 
 export default SelectForm;

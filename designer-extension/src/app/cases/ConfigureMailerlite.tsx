@@ -124,24 +124,45 @@ const ConfigureMailerlite: React.FC<ConfigureMailerLiteProps> = ({
   //TODO: Add something here that does something when there are 0 fields.......
   return (
     <div className="flex flex-col items-center justify-center py-4 px-4 bg-wf-gray text-wf-lightgray h-screen overflow-auto">
-      <div className="text-center space-y-6 flex flex-col h-full justify-between">
+      <div className="text-center space-y-4 flex flex-col h-full justify-between pb-2">
         {isLoading ? (
           <div>Loading...</div>
         ) : (
           <>
-            <h1 className="text-2xl font-semibold text-gray-200 mb-4 mt-4">
-              Configure Webflow form fields for Mailerlite
-            </h1>
-            <div className="space-y-6">
-              {/* Select email */}
-              <div className="border-b border-gray-600 py-2 flex justify-between items-center">
-                <span>Email</span>
+            <div>
+            <div className="flex justify-start fixed top-2">
+            <button
+              onClick={() => {
+                setPage(2);
+              }}
+              className="text-sm font-regular text-left"
+              style={{ color: "#8AC2FF" }}
+            >
+              <span className="inline-block">{"<"}</span>{" "}
+              Back
+            </button>
+            </div>
+              <h1 className="text-md font-medium text-left text-gray-200 mb-2 mt-4">
+                Connect Webflow fields to Mailerlite
+              </h1>
+              <p className="text-sm mb-2 text-left text-gray-400">
+                Select Email
+              </p>
+              <div className="mb-4">
                 <select
                   required
                   onChange={(e) =>
                     handleDropdownChange("email", e.target.value)
                   }
-                  className="appearance-none py-1 px-3 bg-wf-gray border rounded shadow leading-tight focus:outline-none focus:shadow-outline"
+                  style={{
+                    backgroundColor: "#383838",
+                    color: "white",
+                    padding: "8px 16px",
+                    borderRadius: "4px",
+                    outline: "none",
+                    width: "100%",
+                    boxSizing: "border-box",
+                  }}
                 >
                   <option value="" disabled selected>
                     Select Email Field
@@ -156,15 +177,24 @@ const ConfigureMailerlite: React.FC<ConfigureMailerLiteProps> = ({
                   ))}
                 </select>
               </div>
-              {/* Select group */}
-              <div className="border-b border-gray-600 py-2 flex justify-between items-center">
-                <span>Group</span>
+              <p className="text-sm mb-2 text-left text-gray-400">
+                Select Group
+              </p>
+              <div className="mb-8">
                 <select
                   required
                   onChange={(e) =>
                     handleDropdownChange("group", e.target.value)
                   }
-                  className="appearance-none py-1 px-3 bg-wf-gray border rounded shadow leading-tight focus:outline-none focus:shadow-outline"
+                  style={{
+                    backgroundColor: "#383838",
+                    color: "white",
+                    padding: "8px 16px",
+                    borderRadius: "4px",
+                    outline: "none",
+                    width: "100%",
+                    boxSizing: "border-box",
+                  }}
                 >
                   <option value="" disabled selected>
                     Select Mailerlite Group
@@ -176,13 +206,21 @@ const ConfigureMailerlite: React.FC<ConfigureMailerLiteProps> = ({
                   ))}
                 </select>
               </div>
-            </div>
-            <button
-              className="mt-6 mb-6 px-6 py-2 bg-blue-500 text-white rounded shadow hover:bg-blue-600 transition duration-150 ease-in-out"
-              onClick={handleConfirm}
-            >
-              Confirm Selections
-            </button>
+              <button
+                onClick={() => handleConfirm()}
+                style={{
+                  backgroundColor: "#0b71ce",
+                  color: "white",
+                  padding: "8px 16px",
+                  borderRadius: "4px",
+                  outline: "none",
+                  width: "100%",
+                  boxSizing: "border-box",
+                }}
+              >
+                Confirm
+              </button>
+              </div>
           </>
         )}
       </div>
