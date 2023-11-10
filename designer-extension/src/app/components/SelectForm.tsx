@@ -12,7 +12,7 @@ const SelectForm: React.FC<SelectFormProps> = ({
   setSelectedForm,
   selectedForm,
 }) => {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [forms, setForms] = useState<Form[]>([]);
 
   useEffect(() => {
@@ -25,7 +25,6 @@ const SelectForm: React.FC<SelectFormProps> = ({
   };
 
   const fetchForms = async () => {
-    setIsLoading(true);
 
     if (!selectedSite) {
       return;
@@ -82,6 +81,9 @@ const SelectForm: React.FC<SelectFormProps> = ({
   return (
     <div className="flex flex-col items-center justify-center py-4 px-4 bg-wf-gray text-wf-lightgray h-screen overflow-auto">
       <div className="text-center space-y-4 flex flex-col h-full justify-between pb-2">
+      {isLoading ? (
+        <div>Loading...</div>
+      ) : (
         <>
           <div>
             <div className="flex justify-start fixed top-2">
@@ -139,6 +141,7 @@ const SelectForm: React.FC<SelectFormProps> = ({
             </button>
           </div>
         </>
+      )}
       </div>
     </div>
   );

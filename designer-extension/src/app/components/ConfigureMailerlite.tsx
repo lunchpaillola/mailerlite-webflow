@@ -17,7 +17,7 @@ const ConfigureMailerlite: React.FC<ConfigureMailerLiteProps> = ({
   selectedSite,
   token,
 }) => {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   //const [fields, setFields] = useState<MailerliteFields[]>([]);
   const [groups, setGroups] = useState<MailerliteGroups[]>([]);
   const [webflowFormFields, setWebflowFormFields] = useState<
@@ -30,7 +30,6 @@ const ConfigureMailerlite: React.FC<ConfigureMailerLiteProps> = ({
   const mKey = String(process.env.MAILERLITE_API_KEY);
 
   const fetchMailerlite = async () => {
-    setIsLoading(true);
 
     const params = new URLSearchParams({
       auth: mKey,
@@ -118,6 +117,9 @@ const ConfigureMailerlite: React.FC<ConfigureMailerLiteProps> = ({
   return (
     <div className="flex flex-col items-center justify-center py-4 px-4 bg-wf-gray text-wf-lightgray h-screen overflow-auto">
       <div className="text-center space-y-4 flex flex-col h-full justify-between pb-2">
+      {isLoading ? (
+        <div>Loading...</div>
+      ) : (
           <>
             <div>
             <div className="flex justify-start fixed top-2">
@@ -212,6 +214,7 @@ const ConfigureMailerlite: React.FC<ConfigureMailerLiteProps> = ({
               </button>
               </div>
           </>
+           )}
       </div>
     </div>
   );

@@ -10,7 +10,7 @@ const ViewWebhooks: React.FC<ViewWebhookProps> = ({
   selectedSite,
   setPage,
 }) => {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [webhooks, setWebhooks] = useState<WebhookProps[]>([]);
 
   useEffect(() => {
@@ -54,7 +54,6 @@ const ViewWebhooks: React.FC<ViewWebhookProps> = ({
   };
 
   const fetchWebhooks = async () => {
-    setIsLoading(true);
 
     const params = new URLSearchParams({
       auth: token,
@@ -83,6 +82,7 @@ const ViewWebhooks: React.FC<ViewWebhookProps> = ({
       setIsLoading(false);
     }
   };
+  
 
   return (
     <div className="flex flex-col items-center justify-center py-4 px-4 bg-wf-gray text-wf-lightgray h-screen overflow-auto">

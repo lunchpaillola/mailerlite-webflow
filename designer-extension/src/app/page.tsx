@@ -1,10 +1,11 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import Login from "./cases/Login";
-import Navigate from "./cases/Navigate";
-import SelectForm from "./cases/SelectForm";
-import ConfigureMailerlite from "./cases/ConfigureMailerlite";
-import ViewWebhooks from "./cases/ViewWebhooks";
+import Login from "./components/Login";
+import Navigate from "./components/Navigate";
+import SelectForm from "./components/SelectForm";
+import ConfigureMailerlite from "./components/ConfigureMailerlite";
+import ViewWebhooks from "./components/ViewWebhooks";
+import LoadingComponent from "./components/LoadingComponent";
 import { Site, Form } from "./types/globalTypes";
 
 const MainPage: React.FC = () => {
@@ -12,8 +13,9 @@ const MainPage: React.FC = () => {
   const [token, setToken] = useState<string>("");
   const [selectedSite, setSelectedSite] = useState<Site | null>(null);
   const [selectedForm, setSelectedForm] = useState<Form | null>(null);
-
+  const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
+    console.log('log');
     if (typeof window !== "undefined") {
       // Get authorization, if already authorized then set setPage to 1
       const auth = localStorage.getItem("devflow_token");
@@ -28,8 +30,8 @@ const MainPage: React.FC = () => {
       };
       setPage(auth ? 1 : 0);
       setToken(auth || "");
-      getSiteInfo();
-    }
+      getSiteInfo().then(() => setIsLoading(false));
+    } 
   }, []);
 
   // If token is undefined send user to Login Page
@@ -37,16 +39,16 @@ const MainPage: React.FC = () => {
     return <Login setPage={setPage} token={token} setToken={setToken} />;
   }
 
+  if (isLoading) {
+    return <LoadingComponent/>; 
+  } 
+  
   // This function determines which content appears on the page
   switch (page) {
     case 0:
       return <Login setPage={setPage} token={token} setToken={setToken} />;
     case 1:
-      return (
-        <Navigate
-          setPage={setPage}
-        />
-      );
+      return <Navigate setPage={setPage} />;
     case 2:
       return (
         <SelectForm
