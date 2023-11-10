@@ -91,7 +91,8 @@ const ConfigureMailerlite: React.FC<ConfigureMailerLiteProps> = ({
         fieldConnection: JSON.stringify(fieldConnections),
         siteId: selectedSite ? selectedSite.id : "none",
         auth: token,
-        formId: selectedForm.id,
+        pageId: selectedForm.pageId,
+        pageName: selectedForm.pageName,
         formName: selectedForm.displayName,
       });
       const response = await fetch(

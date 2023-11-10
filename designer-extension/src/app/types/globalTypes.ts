@@ -1,4 +1,4 @@
-// ==== Login types ====
+// ==== Login types and Navigation Props ====
 
 export interface LoginProps {
  setPage: any;
@@ -6,24 +6,15 @@ export interface LoginProps {
  setToken: any;
 }
 
+export interface NavigateProps {
+  setPage: any;
+ }
+
 
 // ==== Site Types ====
 export interface Site {
  id: string;
  shortName: string;
-}
-
-export interface Domain {
- id: string;
- url: string;
-}
-
-export interface SelectDomainProps {
- setPage: any;
- token: string;
- selectedDomain: any;
- setSelectedDomain: any;
- selectedSite: Site | null;
 }
 
 // ==== Form Types ====
@@ -49,7 +40,6 @@ export interface SelectFormProps {
  selectedForm: any;
  setPage: any;
  token: string;
- domain: Domain | null;
  selectedSite: Site | null;
 }
 
@@ -101,7 +91,6 @@ export interface ConfigureMailerLiteProps {
  selectedForm: any;
  setPage: any;
  token: string;
- domain: Domain | null;
  selectedSite: Site | null;
 }
 
@@ -118,7 +107,7 @@ export interface WebhookProps {
  triggerType: string;
  siteId: string;
  workspaceId: string;
- filter: { formId: string, formName: string,};
+ filter: { pageId: string, pageName: string, formName: string,};
  lastTriggered: Date;
  createdOn: Date;
  url: string;

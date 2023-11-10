@@ -68,7 +68,8 @@ export async function POST(request) {
   const fieldConnection = JSON.parse(fieldConnectionString);
   const siteId = searchParams.get("siteId");
   const auth = searchParams.get("auth");
-  const formId = searchParams.get("formId");
+  const pageId = searchParams.get("pageId");
+  const pageName=searchParams.get("pageName");
   const formName = searchParams.get("formName");
 
   const params = new URLSearchParams({
@@ -98,10 +99,12 @@ export async function POST(request) {
       triggerType: "form_submission",
       url: webhookUrl,
       filter: {
-        formId: formId,
+        pageId: pageId,
         formName: formName,
+        pageName: pageName
       },
     });
+    console.log('webhook', response.data)
     return NextResponse.json(
       { webhooks: response.data },
       {

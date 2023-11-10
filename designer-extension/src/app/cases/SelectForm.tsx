@@ -9,7 +9,6 @@ const SelectForm: React.FC<SelectFormProps> = ({
   token,
   selectedSite,
   setPage,
-  domain,
   setSelectedForm,
   selectedForm,
 }) => {
@@ -50,11 +49,22 @@ const SelectForm: React.FC<SelectFormProps> = ({
 
       const data = await response.json();
 
-      if (data.forms.forms && domain) {
-        const filteredForms = data.forms.forms.filter(
-          (form: { siteDomainId: any }) => form.siteDomainId === domain.id
-        );
-        setForms(filteredForms);
+      //filtering for unique forms across all domains
+      if (data.forms.forms) {
+        const filteredForms = data.forms.forms
+          .reduce((uniqueForms: Map<string, Form>, form: Form) => {
+            const identifier = form.pageId + "-" + form.displayName; // Create a unique identifier
+            if (!uniqueForms.has(identifier)) {
+              uniqueForms.set(identifier, form); // Add new unique form to the Set
+            }
+            return uniqueForms;
+          }, new Map<string, Form>())
+          .values();
+        console.log("filteredForms", filteredForms);
+
+        const uniqueFormsArray: Form[] = Array.from(filteredForms);
+        console.log("uniqueFormsArray", uniqueFormsArray);
+        setForms(uniqueFormsArray); // Update the state with the unique forms
       }
     } catch (error) {
       console.error("Error:", error);
@@ -72,19 +82,18 @@ const SelectForm: React.FC<SelectFormProps> = ({
   return (
     <div className="flex flex-col items-center justify-center py-4 px-4 bg-wf-gray text-wf-lightgray h-screen overflow-auto">
       <div className="text-center space-y-4 flex flex-col h-full justify-between pb-2">
-          <>
+        <>
           <div>
-          <div className="flex justify-start fixed top-2">
-            <button
-              onClick={() => {
-                setPage(1);
-              }}
-              className="text-sm font-regular text-left"
-              style={{ color: "#fff" }}
-            >
-              <span className="inline-block">{"<"}</span>{" "}
-              Back
-            </button>
+            <div className="flex justify-start fixed top-2">
+              <button
+                onClick={() => {
+                  setPage(1);
+                }}
+                className="text-sm font-regular text-left"
+                style={{ color: "#fff" }}
+              >
+                <span className="inline-block">{"<"}</span> Back
+              </button>
             </div>
             <h1 className="text-md font-medium text-left text-gray-200 mb-2 mt-4">
               Select a Form
@@ -109,7 +118,7 @@ const SelectForm: React.FC<SelectFormProps> = ({
                 <option value="">Select a form</option>
                 {forms.map((form, index) => (
                   <option key={index} value={form.id}>
-                    {form.displayName}
+                    {form.pageName}: {form.displayName}
                   </option>
                 ))}
               </select>
@@ -129,7 +138,7 @@ const SelectForm: React.FC<SelectFormProps> = ({
               Confirm
             </button>
           </div>
-          </>
+        </>
       </div>
     </div>
   );

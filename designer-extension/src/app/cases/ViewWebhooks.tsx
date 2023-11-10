@@ -53,10 +53,6 @@ const ViewWebhooks: React.FC<ViewWebhookProps> = ({
     }
   };
 
-  const handleConnectNew = () => {
-    setPage(token ? 1 : 0);
-  };
-
   const fetchWebhooks = async () => {
     setIsLoading(true);
 
@@ -121,7 +117,11 @@ const ViewWebhooks: React.FC<ViewWebhookProps> = ({
                 >
                   <div>
                     <span className="block text-sm text-left">
-                      {webhook.filter.formName}
+                  {webhook.filter.formName}
+                    </span>
+                    <span className="block text-sm text-left text-gray-400">
+                      Page:{" "}
+                      {webhook.filter.pageName}
                     </span>
                     <span className="block text-sm text-left text-gray-400">
                       Last triggered:{" "}
@@ -141,7 +141,7 @@ const ViewWebhooks: React.FC<ViewWebhookProps> = ({
             </ul>
             <div className="flex justify-between mt-8 space-x-2">
               <button
-                onClick={() => handleConnectNew()}
+                onClick={() =>setPage(token ? 2 : 0)}
                 style={{
                   backgroundColor: "#1f2de6",
                   color: "white",
@@ -152,7 +152,7 @@ const ViewWebhooks: React.FC<ViewWebhookProps> = ({
                   boxSizing: "border-box",
                 }}
               >
-                Create new connection
+                Connect new form
               </button>
             </div>
           </div>

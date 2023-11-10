@@ -1,17 +1,16 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Login from "./cases/Login";
-import SelectDomain from "./cases/SelectDomain";
+import Navigate from "./cases/Navigate";
 import SelectForm from "./cases/SelectForm";
 import ConfigureMailerlite from "./cases/ConfigureMailerlite";
 import ViewWebhooks from "./cases/ViewWebhooks";
-import { Site, Form, Domain } from "./types/globalTypes";
+import { Site, Form } from "./types/globalTypes";
 
 const MainPage: React.FC = () => {
   const [page, setPage] = useState(0);
   const [token, setToken] = useState<string>("");
   const [selectedSite, setSelectedSite] = useState<Site | null>(null);
-  const [selectedDomain, setSelectedDomain] = useState<Domain | null>(null);
   const [selectedForm, setSelectedForm] = useState<Form | null>(null);
 
   useEffect(() => {
@@ -44,12 +43,8 @@ const MainPage: React.FC = () => {
       return <Login setPage={setPage} token={token} setToken={setToken} />;
     case 1:
       return (
-        <SelectDomain
+        <Navigate
           setPage={setPage}
-          token={token}
-          selectedSite={selectedSite}
-          selectedDomain={selectedDomain}
-          setSelectedDomain={setSelectedDomain}
         />
       );
     case 2:
@@ -58,7 +53,6 @@ const MainPage: React.FC = () => {
           selectedForm={selectedForm}
           setSelectedForm={setSelectedForm}
           setPage={setPage}
-          domain={selectedDomain}
           token={token}
           selectedSite={selectedSite}
         />
@@ -69,7 +63,6 @@ const MainPage: React.FC = () => {
           selectedForm={selectedForm}
           setSelectedForm={setSelectedForm}
           setPage={setPage}
-          domain={selectedDomain}
           token={token}
           selectedSite={selectedSite}
         />
