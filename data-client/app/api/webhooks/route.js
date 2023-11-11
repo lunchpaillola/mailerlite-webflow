@@ -104,7 +104,6 @@ export async function POST(request) {
         pageName: pageName
       },
     });
-    console.log('webhook', response.data)
     return NextResponse.json(
       { webhooks: response.data },
       {

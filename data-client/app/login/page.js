@@ -12,13 +12,13 @@ export default function Login() {
                     <Image
                     className="mx-auto h-12 w-auto"
                     src={logo}
-                    alt="Devflow.party logo"
+                    alt="Webflow logo"
                     />
                     <h2 className="mt-6 text-2xl font-extrabold text-gray-900">
                     Login with your Webflow account
                     </h2>
                     <p className="mt-2 text-sm text-gray-600">
-                        This is a demo app that explores the possibilities of what you could build with the Webflow API. 
+                    Connect your Webflow account to access this integration
                     </p>
                 </div>
                 <div className="mt-8 space-y-6">

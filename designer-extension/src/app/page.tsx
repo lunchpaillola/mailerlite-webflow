@@ -15,10 +15,9 @@ const MainPage: React.FC = () => {
   const [selectedForm, setSelectedForm] = useState<Form | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
-    console.log('log');
     if (typeof window !== "undefined") {
       // Get authorization, if already authorized then set setPage to 1
-      const auth = localStorage.getItem("devflow_token");
+      const auth = localStorage.getItem("webflow_token");
 
       const getSiteInfo = async () => {
         const siteInfo = await webflow.getSiteInfo();

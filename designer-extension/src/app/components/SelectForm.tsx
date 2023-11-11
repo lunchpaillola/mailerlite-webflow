@@ -59,10 +59,8 @@ const SelectForm: React.FC<SelectFormProps> = ({
             return uniqueForms;
           }, new Map<string, Form>())
           .values();
-        console.log("filteredForms", filteredForms);
 
         const uniqueFormsArray: Form[] = Array.from(filteredForms);
-        console.log("uniqueFormsArray", uniqueFormsArray);
         setForms(uniqueFormsArray); // Update the state with the unique forms
       }
     } catch (error) {
