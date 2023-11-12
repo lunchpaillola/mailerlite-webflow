@@ -14,11 +14,11 @@ const Login: React.FC<LoginProps> = ({
   return token ? (
     <div className="flex items-center min-h-screen py-2 bg-wf-gray text-wf-lightgray">
       <div className="w-full">
-        <div className="w-full px-4 fixed top-24">
+        <div className="w-full px-4 fixed top-16">
           <h1 className="text-center font-medium text-gray-200">
             Account authorized
           </h1>
-          <p className="text-md text-center text-gray-400 mt-4">
+          <p className="text-md text-center text-gray-400">
             Continue to connect forms
           </p>
           <div className="mt-4 px-4 space-y-6">
@@ -49,7 +49,7 @@ const Login: React.FC<LoginProps> = ({
           <h1 className="text-center font-medium text-gray-200">
             Reauthorization required
           </h1>
-          <p className="text-md text-center text-gray-400 mt-4">
+          <p className="text-md text-center text-gray-400">
             Connect your Webflow account to continue.
           </p>
           <div className="mt-4 px-4 space-y-6">

@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { SelectFormProps, Form } from "../types/globalTypes";
+import LoadingComponent from "./LoadingComponent";
 import "./style.css";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
@@ -25,7 +26,6 @@ const SelectForm: React.FC<SelectFormProps> = ({
   };
 
   const fetchForms = async () => {
-
     if (!selectedSite) {
       return;
     }
@@ -77,43 +77,35 @@ const SelectForm: React.FC<SelectFormProps> = ({
   };
 
   return (
-    <div className="flex flex-col items-center justify-center py-4 px-4 bg-wf-gray text-wf-lightgray h-screen overflow-auto">
-      <div className="text-center space-y-4 flex flex-col h-full justify-between pb-2">
-      {isLoading ? (
-        <div>Loading...</div>
-      ) : (
-        <>
-          <div>
-            <div className="flex justify-start fixed top-2">
+    <div className="flex items-center min-h-screen py-2 bg-wf-gray text-wf-lightgray">
+      <div className="w-full">
+        {isLoading ? (
+          <LoadingComponent/>
+        ) : (
+          <>
+            <div className="fixed top-4 px-4">
               <button
                 onClick={() => {
                   setPage(1);
                 }}
-                className="text-sm font-regular text-left"
-                style={{ color: "#fff" }}
+                className="text-sm font-regular text-white text-left"
               >
                 <span className="inline-block">{"<"}</span> Back
               </button>
             </div>
-            <h1 className="text-md font-medium text-left text-gray-200 mb-2 mt-4">
+            <div className="w-full fixed top-16">
+            <h1 className="text-md font-medium text-center text-gray-200">
               Select a Form
             </h1>
-            <p className="text-sm mb-4 text-left text-gray-400">
-              Select a form to connect to Mailerlite
+            <p className="text-sm text-center text-gray-400">
+              Connect a form to Mailerlite
             </p>
-            <div className="mb-8">
+            </div>
+            <div className="px-4">
               <select
                 value={selectedForm?.id || ""}
                 onChange={handleDropdownChange}
-                style={{
-                  backgroundColor: "#383838",
-                  color: "white",
-                  padding: "8px 16px",
-                  borderRadius: "4px",
-                  outline: "none",
-                  width: "100%",
-                  boxSizing: "border-box",
-                }}
+                className="bg-[#383838] text-white px-4 py-2 rounded outline-none w-full box-border mb-4"
               >
                 <option value="">Select a form</option>
                 {forms.map((form, index) => (
@@ -122,24 +114,15 @@ const SelectForm: React.FC<SelectFormProps> = ({
                   </option>
                 ))}
               </select>
-            </div>
-            <button
+              <button
               onClick={() => handleFormClick(selectedForm)}
-              style={{
-                backgroundColor: "#1f2de6",
-                color: "white",
-                padding: "8px 16px",
-                borderRadius: "4px",
-                outline: "none",
-                width: "100%",
-                boxSizing: "border-box",
-              }}
+              className="bg-[#1f2de6] text-white px-4 py-2 rounded outline-none w-full box-border hover:bg-[#1634d1] focus:outline-none focus:ring-2 focus:ring-[#1f2de6] focus:ring-opacity-50"
             >
               Confirm
             </button>
-          </div>
-        </>
-      )}
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
