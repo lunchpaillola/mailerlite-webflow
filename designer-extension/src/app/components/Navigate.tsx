@@ -5,25 +5,27 @@ import "./style.css";
 
 const Navigate: React.FC<NavigateProps> = ({ setPage }) => {
   return (
-    <div className="flex flex-col items-center justify-center py-4 px-4 bg-wf-gray text-wf-lightgray h-screen overflow-auto">
-    <div className="text-center space-y-4 flex flex-col h-full justify-between pb-4">
-      <div>
-        <div className="flex justify-start fixed top-2 bottom 4">
-          <button
-            onClick={() => {
-              setPage(0);
-            }}
-            className="text-sm font-regular text-left"
-            style={{ color: "#fff" }}
-          >
-            <span className="inline-block">{"<"}</span> Back
-          </button>
-        </div>
-        <h1 className="text-md font-medium text-left text-gray-200 mb-2 mt-4">
+    <div className="flex items-center min-h-screen py-2 bg-wf-gray text-wf-lightgray">
+      <div className="w-full">
+         {/* Top section with back button*/}
+      <div className="px-4 fixed top-4">
+        <button
+          onClick={() => {
+            setPage(0);
+            console.log("setPage", setPage);
+          }}
+          className="text-sm font-regular text-white text-left"
+        >
+          <span className="inline-block">{"<"}</span> Back
+        </button>
+      </div>
+      <div className="w-full fixed top-24">
+      <h1 className="text-center font-medium text-gray-200">
           Choose your action
         </h1>
-        {/* Button container should not be flex or justify-between */}
-        <div className="mt-8">
+      </div>
+        {/* Buttons that should be centered */}
+        <div className="w-full px-8 flex flex-col">
           <button
             onClick={() => setPage(2)}
             style={{
@@ -34,12 +36,11 @@ const Navigate: React.FC<NavigateProps> = ({ setPage }) => {
               outline: "none",
               width: "100%",
               boxSizing: "border-box",
+              marginBottom: "24px", // Add some space between the buttons
             }}
           >
             Connect new form
           </button>
-        </div>
-        <div className="mt-8">
           <button
             onClick={() => setPage(4)}
             style={{
@@ -48,7 +49,7 @@ const Navigate: React.FC<NavigateProps> = ({ setPage }) => {
               padding: "8px 16px",
               borderRadius: "4px",
               outline: "none",
-              width: "100%", 
+              width: "100%",
               boxSizing: "border-box",
             }}
           >
@@ -57,8 +58,6 @@ const Navigate: React.FC<NavigateProps> = ({ setPage }) => {
         </div>
       </div>
     </div>
-  </div>
-  
   );
 };
 

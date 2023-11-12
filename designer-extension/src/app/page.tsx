@@ -35,7 +35,7 @@ const MainPage: React.FC = () => {
 
   // If token is undefined send user to Login Page
   if (!token) {
-    return <Login setPage={setPage} token={token} setToken={setToken} />;
+    return <Login setPage={setPage} token={token} />;
   }
 
   if (isLoading) {
@@ -45,7 +45,7 @@ const MainPage: React.FC = () => {
   // This function determines which content appears on the page
   switch (page) {
     case 0:
-      return <Login setPage={setPage} token={token} setToken={setToken} />;
+      return <Login setPage={setPage} token={token} />;
     case 1:
       return <Navigate setPage={setPage} />;
     case 2:

@@ -1,56 +1,80 @@
 "use client";
 import React from "react";
-import { motion } from "framer-motion"; // For animations
 import { LoginProps } from "../types/globalTypes";
-import "./style.css";
+// Add your auth URL here
+const AUTH_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 const Login: React.FC<LoginProps> = ({
   setPage,
   token,
-  setToken,
 }: {
   setPage: any;
   token: any;
-  setToken: any;
 }) => {
-  return (
-    <motion.div
-      className="flex flex-col items-center justify-center min-h-screen py-2 bg-wf-gray text-wf-lightgray"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
-    >
-      <div className="text-center space-y-8">
-        <div>
-          <h1 className="mt-3 text-4xl font-bold text-gray-200 mb-2">
-            Connect Mailerlite to Webflow
+  return token ? (
+    <div className="flex items-center min-h-screen py-2 bg-wf-gray text-wf-lightgray">
+      <div className="w-full">
+        <div className="w-full px-4 fixed top-24">
+          <h1 className="text-center font-medium text-gray-200">
+            Account authorized
           </h1>
-          <h2 className="mt-3 text-lg text-gray-400 mb-2">
-            by Lunch Pail Labs
-          </h2>
-          <div className="mt-8 space-y-6">
-            <input
-              type="text"
-              onBlur={(e) => {
-                setToken(e.target.value);
-              }}
-              className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-              placeholder="Enter your auth token"
-            />
+          <p className="text-md text-center text-gray-400 mt-4">
+            Continue to connect forms
+          </p>
+          <div className="mt-4 px-4 space-y-6">
             <button
-              type="submit"
-              className="group relative flex w-full justify-center rounded-md border border-transparent bg-blue-600 py-2 px-4 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 cursor-pointer border-gray-700"
-              onClick={() => {
-                localStorage.setItem("webflow_token", token);
-                setPage(1);
+              onClick={() => setPage(1)}
+              style={{
+                backgroundColor: "#383838",
+                color: "white",
+                padding: "8px 16px",
+                borderRadius: "4px",
+                display: "block",
+                textAlign: "center",
+                width: "100%",
+                boxSizing: "border-box",
+                textDecoration: "none",
               }}
             >
-              Authenticate
+              Continue
             </button>
           </div>
         </div>
       </div>
-    </motion.div>
+    </div>
+  ) : (
+    <div className="flex items-center min-h-screen py-2 bg-wf-gray text-wf-lightgray">
+      <div className="w-full">
+        <div className="w-full px-4 fixed top-24">
+          <h1 className="text-center font-medium text-gray-200">
+            Reauthorization required
+          </h1>
+          <p className="text-md text-center text-gray-400 mt-4">
+            Connect your Webflow account to continue.
+          </p>
+          <div className="mt-4 px-4 space-y-6">
+            <button
+              onClick={() =>
+                window.open(AUTH_URL, "_blank", "noopener,noreferrer")
+              }
+              style={{
+                backgroundColor: "#383838",
+                color: "white",
+                padding: "8px 16px",
+                borderRadius: "4px",
+                display: "block",
+                textAlign: "center",
+                width: "100%",
+                boxSizing: "border-box",
+                textDecoration: "none",
+              }}
+            >
+              Connect to Webflow
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 

@@ -3,8 +3,15 @@
 export interface LoginProps {
  setPage: any;
  token: any;
- setToken: any;
 }
+
+//not used in this demo but will incorporate a version for API keys later
+export interface ApiKeyProps {
+  setPage: any;
+  token: any;
+  setToken: any;
+ }
+ 
 
 export interface NavigateProps {
   setPage: any;
