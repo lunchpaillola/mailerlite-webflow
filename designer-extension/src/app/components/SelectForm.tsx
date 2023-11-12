@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { SelectFormProps, Form } from "../types/globalTypes";
 import LoadingComponent from "./LoadingComponent";
+import ChevronLeftIcon from '../icons/ChevronLeftIcon';
 import "./style.css";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
@@ -83,15 +84,16 @@ const SelectForm: React.FC<SelectFormProps> = ({
           <LoadingComponent/>
         ) : (
           <>
-            <div className="fixed top-4 px-4">
+            <div className="fixed top-2 px-4">
               <button
                 onClick={() => {
                   setPage(1);
                 }}
-                className="text-sm font-regular text-white text-left"
-              >
-                <span className="inline-block">{"<"}</span> Back
-              </button>
+                className="flex items-center text-sm font-regular text-white text-left"
+                >
+                  <ChevronLeftIcon/>
+                  Back
+                </button>
             </div>
             <div className="w-full fixed top-16">
             <h1 className="text-md font-medium text-center text-gray-200">

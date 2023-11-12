@@ -1,1 +1,0 @@
-export { Chevronsmallright } from "./Chevronsmallright";

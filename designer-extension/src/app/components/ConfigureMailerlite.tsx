@@ -7,6 +7,8 @@ import {
   MailerliteGroups,
   ConfigureMailerLiteProps,
 } from "../types/globalTypes";
+import LoadingComponent from "./LoadingComponent";
+import ChevronLeftIcon from "../icons/ChevronLeftIcon";
 import "./style.css";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
@@ -30,7 +32,6 @@ const ConfigureMailerlite: React.FC<ConfigureMailerLiteProps> = ({
   const mKey = String(process.env.MAILERLITE_API_KEY);
 
   const fetchMailerlite = async () => {
-
     const params = new URLSearchParams({
       auth: mKey,
     });
@@ -115,46 +116,41 @@ const ConfigureMailerlite: React.FC<ConfigureMailerLiteProps> = ({
 
   //TODO: Add something here that does something when there are 0 fields.......
   return (
-    <div className="flex flex-col items-center justify-center py-4 px-4 bg-wf-gray text-wf-lightgray h-screen overflow-auto">
-      <div className="text-center space-y-4 flex flex-col h-full justify-between pb-2">
-      {isLoading ? (
-        <div>Loading...</div>
-      ) : (
+    <div className="flex items-center min-h-screen py-2 bg-wf-gray text-wf-lightgray">
+      <div className="w-full">
+        {isLoading ? (
+          <LoadingComponent />
+        ) : (
           <>
-            <div>
-            <div className="flex justify-start fixed top-2">
-            <button
-              onClick={() => {
-                setPage(2);
-              }}
-              className="text-sm font-regular text-left"
-              style={{ color: "#fff" }}
-            >
-              <span className="inline-block">{"<"}</span>{" "}
-              Back
-            </button>
+            <div className="fixed top-2 px-4">
+              <button
+                onClick={() => {
+                  setPage(2);
+                }}
+                className="flex items-center text-sm font-regular text-white text-left"
+              >
+                <ChevronLeftIcon />
+                Back
+              </button>
             </div>
-              <h1 className="text-md font-medium text-left text-gray-200 mb-2 mt-4">
-                Connect Webflow fields to Mailerlite
+            <div className="w-full fixed top-12 px-4">
+              <h1 className="text-md font-medium text-center text-gray-200">
+                Map fields
               </h1>
+              <p className="text-sm text-center text-gray-400 mb-16">
+                Connect Webflow form fields
+              </p>
+            </div>
+            <div className="px-4 mt-16">
               <p className="text-sm mb-2 text-left text-gray-400">
                 Select Email
               </p>
-              <div className="mb-4">
                 <select
                   required
                   onChange={(e) =>
                     handleDropdownChange("email", e.target.value)
                   }
-                  style={{
-                    backgroundColor: "#383838",
-                    color: "white",
-                    padding: "8px 16px",
-                    borderRadius: "4px",
-                    outline: "none",
-                    width: "100%",
-                    boxSizing: "border-box",
-                  }}
+                  className="bg-[#383838] text-white px-4 py-2 rounded outline-none w-full box-border mb-4"
                 >
                   <option value="" disabled selected>
                     Select Email Field
@@ -168,25 +164,15 @@ const ConfigureMailerlite: React.FC<ConfigureMailerLiteProps> = ({
                     </option>
                   ))}
                 </select>
-              </div>
               <p className="text-sm mb-2 text-left text-gray-400">
                 Select Group
               </p>
-              <div className="mb-8">
                 <select
                   required
                   onChange={(e) =>
                     handleDropdownChange("group", e.target.value)
                   }
-                  style={{
-                    backgroundColor: "#383838",
-                    color: "white",
-                    padding: "8px 16px",
-                    borderRadius: "4px",
-                    outline: "none",
-                    width: "100%",
-                    boxSizing: "border-box",
-                  }}
+                  className="bg-[#383838] text-white px-4 py-2 rounded outline-none w-full box-border mb-4"
                 >
                   <option value="" disabled selected>
                     Select Mailerlite Group
@@ -197,24 +183,15 @@ const ConfigureMailerlite: React.FC<ConfigureMailerLiteProps> = ({
                     </option>
                   ))}
                 </select>
-              </div>
               <button
                 onClick={() => handleConfirm()}
-                style={{
-                  backgroundColor: "#1f2de6",
-                  color: "white",
-                  padding: "8px 16px",
-                  borderRadius: "4px",
-                  outline: "none",
-                  width: "100%",
-                  boxSizing: "border-box",
-                }}
+                className="bg-[#1f2de6] text-white px-4 py-2 rounded outline-none w-full box-border hover:bg-[#1634d1] focus:outline-none focus:ring-2 focus:ring-[#1f2de6] focus:ring-opacity-50"
               >
                 Confirm
               </button>
-              </div>
+            </div>
           </>
-           )}
+        )}
       </div>
     </div>
   );

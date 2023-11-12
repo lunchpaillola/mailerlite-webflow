@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import { NavigateProps } from "../types/globalTypes";
+import ChevronLeftIcon from '../icons/ChevronLeftIcon';
 import "./style.css";
 
 const Navigate: React.FC<NavigateProps> = ({ setPage }) => {
@@ -12,24 +13,10 @@ const Navigate: React.FC<NavigateProps> = ({ setPage }) => {
           <button
             onClick={() => {
               setPage(0);
-              console.log("setPage", setPage);
             }}
             className="flex items-center text-sm font-regular text-white text-left"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              className="w-4 h-4 mr-1"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M15 19l-7-7 7-7"
-              />
-            </svg>{" "}
+            <ChevronLeftIcon/>
             Back
           </button>
         </div>
