@@ -30,30 +30,13 @@ const Navigate: React.FC<NavigateProps> = ({ setPage }) => {
         <div className="w-full px-8 flex flex-col">
           <button
             onClick={() => setPage(2)}
-            style={{
-              backgroundColor: "#383838",
-              color: "white",
-              padding: "8px 16px",
-              borderRadius: "4px",
-              outline: "none",
-              width: "100%",
-              boxSizing: "border-box",
-              marginBottom: "24px", // Add some space between the buttons
-            }}
+            className="bg-[#383838] text-white px-4 py-2 rounded outline-none w-full box-border mb-6"
           >
             Connect new form
           </button>
           <button
             onClick={() => setPage(4)}
-            style={{
-              backgroundColor: "#383838",
-              color: "white",
-              padding: "8px 16px",
-              borderRadius: "4px",
-              outline: "none",
-              width: "100%",
-              boxSizing: "border-box",
-            }}
+            className="bg-[#383838] text-white px-4 py-2 rounded outline-none w-full box-border mb-6"
           >
             View connections
           </button>

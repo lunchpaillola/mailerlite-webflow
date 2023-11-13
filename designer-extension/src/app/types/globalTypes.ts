@@ -107,6 +107,7 @@ export interface ViewWebhookProps {
  setPage: any;
  token: string;
  selectedSite: Site | null;
+ selectedForm: Form | null;
 }
 
 export interface WebhookProps {

@@ -137,8 +137,8 @@ const ConfigureMailerlite: React.FC<ConfigureMailerLiteProps> = ({
               <h1 className="text-md font-medium text-center text-gray-200">
                 Map fields
               </h1>
-              <p className="text-sm text-center text-gray-400 mb-16">
-                Connect Webflow form fields
+              <p className="text-sm text-center text-gray-400">
+                Connect {selectedForm.displayName} fields
               </p>
             </div>
             <div className="px-4 mt-16">

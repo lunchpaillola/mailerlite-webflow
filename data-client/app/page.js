@@ -20,23 +20,7 @@ const Splash = () => {
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-200">
       <div className="max-w-sm w-full sm:w-1/2 lg:w-1/3 py-6 px-3">
         <div className="bg-white shadow-lg rounded-lg px-8 pt-6 pb-8 mb-4 flex flex-col items-center text-center">
-          <div className="mb-6">
-            <svg
-              className="mx-auto h-12 w-12 text-gray-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 22V16m0-6a2 2 0 00-2-2V6a2 2 0 014 0v2a2 2 0 00-2 2v6m6 6v-2a2 2 0 00-2-2h-4a2 2 0 00-2 2v2h8z"
-              ></path>
-            </svg>
-          </div>
-          <div className="mb-4">
+          <div>
             <h1 className="text-2xl font-bold text-gray-700 mb-2">Welcome!</h1>
             <p className="text-gray-700 mb-2">
               You have successfully authenticated.
@@ -49,8 +33,8 @@ const Splash = () => {
               </p>
             )}
           </div>
-          <div className="mt-6">
-            <p className="text-sm text-gray-500 mb-4">
+          <div>
+            <p className="text-sm text-gray-500 mb-8">
               Open Webflow to begin using this app.
             </p>
             <a

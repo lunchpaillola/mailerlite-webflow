@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { ViewWebhookProps, WebhookProps } from "../types/globalTypes";
 import LoadingComponent from "./LoadingComponent";
 import ChevronLeftIcon from "../icons/ChevronLeftIcon";
+import DeleteIcon from "../icons/DeleteIcon";
 import "./style.css";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
@@ -10,6 +11,7 @@ const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 const ViewWebhooks: React.FC<ViewWebhookProps> = ({
   token,
   selectedSite,
+  selectedForm,
   setPage,
 }) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -56,7 +58,6 @@ const ViewWebhooks: React.FC<ViewWebhookProps> = ({
   };
 
   const fetchWebhooks = async () => {
-
     const params = new URLSearchParams({
       auth: token,
       siteId: selectedSite.id,
@@ -84,47 +85,43 @@ const ViewWebhooks: React.FC<ViewWebhookProps> = ({
       setIsLoading(false);
     }
   };
-  
 
   return (
-    <div className="flex flex-col items-center justify-center py-4 px-4 bg-wf-gray text-wf-lightgray h-screen overflow-auto">
-      <div className="text-center space-y-4 flex flex-col h-full justify-between pb-2">
+    <div className="flex flex-col items-center min-h-screen bg-wf-gray text-wf-lightgray">
       {isLoading ? (
-        <div>Loading...</div>
+        <LoadingComponent />
       ) : (
-        <div>
-          <div className="flex justify-start fixed top-2">
+        <>
+        <div className= "bg-wf-gray fixed mb-4 top-0 w-full z-10">
+          <div className="fixed top-0 w-full bg-wf-gray">
             <button
-              onClick={() => {
-                setPage(3);
-              }}
-              className="text-sm font-regular text-left"
-              style={{ color: "#fff" }}
+             onClick={() => setPage(selectedForm ? 3 : 1)}
+              className="flex px-4 mt-2 mb-2 items-center text-sm font-regular text-white text-left"
             >
-              <span className="inline-block">{"<"}</span> Back
+              <ChevronLeftIcon />
+              Back
             </button>
+            <h1 className="text-md px-4 font-medium text-center mt-8 text-gray-200">
+              Mailerlite connections
+            </h1>
+            <p className="text-sm px-4 text-center mb-4 text-gray-400">
+              View and manage form connections
+            </p>
+            </div>
           </div>
-          <h1 className="text-md font-medium text-left text-gray-200 mb-2 mt-4">
-            Form connections to Mailerlite
-          </h1>
-          <p className="text-sm mb-4 text-left text-gray-400">
-            View and remove connections
-          </p>
-          <div className="mb-8">
-            <ul className="space-y-4 divide-y divide-gray-600">
+          <div className="mt-36">
+            <ul className="space-y-4 divide-y border-t border-gray-600 divide-gray-600">
               {webhooks.map((webhook) => (
-                <li
-                  key={webhook.id}
-                  className="flex justify-between items-center py-2"
-                >
+                <li key={webhook.id}>
+                  <div className="flex justify-end mt-2">
+                    <button onClick={() => handleDelete(webhook)}>
+                      <DeleteIcon />
+                    </button>
+                  </div>
+                  <span className="text-sm text-left">
+                  {webhook.filter.pageName}: {webhook.filter.formName}
+                  </span>
                   <div>
-                    <span className="block text-sm text-left">
-                  {webhook.filter.formName}
-                    </span>
-                    <span className="block text-sm text-left text-gray-400">
-                      Page:{" "}
-                      {webhook.filter.pageName}
-                    </span>
                     <span className="block text-sm text-left text-gray-400">
                       Last triggered:{" "}
                       {webhook.lastTriggered
@@ -132,35 +129,20 @@ const ViewWebhooks: React.FC<ViewWebhookProps> = ({
                         : "Never"}
                     </span>
                   </div>
-                  <button
-                    onClick={() => handleDelete(webhook)}
-                    className="text-sm text-[#CF313B] py-2 px-4"
-                  >
-                    Delete
-                  </button>
                 </li>
               ))}
             </ul>
-            <div className="flex justify-between mt-8 space-x-2">
+            <div className="flex mt-8 mb-8 space-x-2">
               <button
-                onClick={() =>setPage(token ? 2 : 0)}
-                style={{
-                  backgroundColor: "#1f2de6",
-                  color: "white",
-                  padding: "8px 16px",
-                  borderRadius: "4px",
-                  outline: "none",
-                  width: "100%",
-                  boxSizing: "border-box",
-                }}
+                onClick={() => setPage(token ? 2 : 0)}
+                className="bg-[#1f2de6] text-white px-4 py-2 rounded outline-none w-full box-border hover:bg-[#1634d1] focus:outline-none focus:ring-2 focus:ring-[#1f2de6] focus:ring-opacity-50"
               >
                 Connect new form
               </button>
             </div>
           </div>
-        </div>
+        </>
       )}
-    </div>
     </div>
   );
 };

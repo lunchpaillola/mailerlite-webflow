@@ -30,7 +30,7 @@ const MainPage: React.FC = () => {
       setPage(auth ? 1 : 0);
       setToken(auth || "");
       getSiteInfo().then(() => setIsLoading(false));
-    } 
+    }
   }, []);
 
   // If token is undefined send user to Login Page
@@ -39,9 +39,9 @@ const MainPage: React.FC = () => {
   }
 
   if (isLoading) {
-    return <LoadingComponent/>; 
-  } 
-  
+    return <LoadingComponent />;
+  }
+
   // This function determines which content appears on the page
   switch (page) {
     case 0:
@@ -71,6 +71,7 @@ const MainPage: React.FC = () => {
     case 4:
       return (
         <ViewWebhooks
+          selectedForm={selectedForm}
           setPage={setPage}
           token={token}
           selectedSite={selectedSite}
