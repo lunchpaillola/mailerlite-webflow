@@ -105,29 +105,32 @@ const ViewWebhooks: React.FC<ViewWebhookProps> = ({
               Mailerlite connections
             </h1>
             <p className="text-sm px-4 text-center mb-4 text-gray-400">
-              View and manage form connections
+              Manage form connections
             </p>
             </div>
           </div>
-          <div className="mt-36">
+          <div className="mt-32">
             <ul className="space-y-4 divide-y border-t border-gray-600 divide-gray-600">
               {webhooks.map((webhook) => (
-                <li key={webhook.id}>
-                  <div className="flex justify-end mt-2">
-                    <button onClick={() => handleDelete(webhook)}>
-                      <DeleteIcon />
-                    </button>
-                  </div>
+                <li className="pt-2" key={webhook.id}>
                   <span className="text-sm text-left">
-                  {webhook.filter.pageName}: {webhook.filter.formName}
+                  Name: {webhook.filter.formName}
                   </span>
                   <div>
-                    <span className="block text-sm text-left text-gray-400">
-                      Last triggered:{" "}
+                  <span className="block text-sm text-left mt-2">
+                    Page: {webhook.filter.pageName}
+                    </span>
+                    <span className="block text-sm text-left mt-2">
+                      Last run:{" "}
                       {webhook.lastTriggered
                         ? new Date(webhook.lastTriggered).toLocaleString()
                         : "Never"}
                     </span>
+                    <div className="flex justify-start mt-2 text-sm text-[#CF313B] hover:text-red-700">
+                    <button className="flex col"  onClick={() => handleDelete(webhook)}>
+                    <DeleteIcon /> Delete connection
+                    </button>
+                  </div>
                   </div>
                 </li>
               ))}
