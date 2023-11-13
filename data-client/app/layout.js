@@ -1,8 +1,8 @@
 import './globals.css'
 
 export const metadata = {
-  title: 'DevFlow Party',
-  description: 'A simple App to explore the capabilities of the Webflow API',
+  title: 'Webflow App',
+  description: 'An app to extend the functionality of Webflow',
 }
 
 export default function RootLayout({ children }) {
