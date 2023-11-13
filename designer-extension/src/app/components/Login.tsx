@@ -7,9 +7,11 @@ const AUTH_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 const Login: React.FC<LoginProps> = ({
   setPage,
   token,
+  setToken,
 }: {
   setPage: any;
   token: any;
+  setToken: any;
 }) => {
   return token ? (
     <div className="flex items-center min-h-screen py-2 bg-wf-gray text-wf-lightgray">
@@ -50,27 +52,37 @@ const Login: React.FC<LoginProps> = ({
             Reauthorization required
           </h1>
           <p className="text-md text-center text-gray-400">
-            Connect your Webflow account to continue.
+            <a
+              href={AUTH_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-500 hover:text-blue-600 underline"
+            >
+              Authorize with Webflow{" "}
+            </a>
+            to generate a token.
           </p>
           <div className="mt-4 px-4 space-y-6">
-            <button
-              onClick={() =>
-                window.open(AUTH_URL, "_blank", "noopener,noreferrer")
-              }
-              style={{
-                backgroundColor: "#383838",
-                color: "white",
-                padding: "8px 16px",
-                borderRadius: "4px",
-                display: "block",
-                textAlign: "center",
-                width: "100%",
-                boxSizing: "border-box",
-                textDecoration: "none",
-              }}
-            >
-              Connect to Webflow
-            </button>
+            <div className="mt-8 space-y-6">
+              <input
+                type="text"
+                onBlur={(e) => {
+                  setToken(e.target.value);
+                }}
+                className="bg-[#383838] text-white py-2 px-4 rounded block w-full box-border text-center no-underlinefocus:outline-none focus:ring-gray-500"
+                placeholder="Enter auth token"
+              />
+              <button
+                type="submit"
+                className="bg-[#383838] text-white py-2 px-4 rounded block text-center w-full box-border no-underline"
+                onClick={() => {
+                  setPage(1);
+                  localStorage.setItem("webflow_token", token);
+                }}
+              >
+                Authenticate
+              </button>
+            </div>
           </div>
         </div>
       </div>

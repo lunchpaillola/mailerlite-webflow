@@ -1,10 +1,10 @@
 "use client";
 import React from "react";
 import { motion } from "framer-motion"; // For animations
-import { ApiKeyProps } from "../types/globalTypes";
+import { LoginProps } from "../types/globalTypes";
 import "./style.css";
 
-const Login: React.FC<ApiKeyProps> = ({
+const Login: React.FC<LoginProps> = ({
   setPage,
   token,
   setToken,

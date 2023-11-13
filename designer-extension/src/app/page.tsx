@@ -16,8 +16,9 @@ const MainPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     if (typeof window !== "undefined") {
-      // Get authorization, if already authorized then set setPage to 1
-      const auth = localStorage.getItem("webflow_token");
+      // Get authorization, if already authorized then set setPage to 1.
+
+    const auth = localStorage.getItem("webflow_token");
 
       const getSiteInfo = async () => {
         const siteInfo = await webflow.getSiteInfo();
@@ -35,7 +36,7 @@ const MainPage: React.FC = () => {
 
   // If token is undefined send user to Login Page
   if (!token) {
-    return <Login setPage={setPage} token={token} />;
+    return <Login setPage={setPage} token={token} setToken={setToken} />;
   }
 
   if (isLoading) {
@@ -45,7 +46,7 @@ const MainPage: React.FC = () => {
   // This function determines which content appears on the page
   switch (page) {
     case 0:
-      return <Login setPage={setPage} token={token} />;
+      return <Login setPage={setPage} token={token} setToken={setToken} />;
     case 1:
       return <Navigate setPage={setPage} />;
     case 2:

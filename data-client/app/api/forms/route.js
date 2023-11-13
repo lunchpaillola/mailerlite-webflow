@@ -1,9 +1,5 @@
 import { getAPIClient } from '@/utils/webflow_helper';
 import { NextResponse } from 'next/server';
-import { pipeline } from 'stream';
-import { promisify } from 'util';
-
-const pipelineAsync = promisify(pipeline);
 
 /**
  * An asynchronous function that handles POST requests. 
