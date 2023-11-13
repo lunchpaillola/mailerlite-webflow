@@ -2,7 +2,7 @@ import { getAPIClient } from '@/utils/webflow_helper';
 import { NextResponse } from 'next/server';
 
 /**
- * An asynchronous function that handles POSt and GET requests. 
+ * An asynchronous function that handles POST and GET requests. 
  * This function Gets and requests webhooks from the webflow APi
  */
 
@@ -11,8 +11,9 @@ export async function GET(request) {
   const siteId = searchParams.get("siteId");
   const auth = searchParams.get("auth");
 
-  if (!auth || siteId) {
+  if (!auth || !siteId) {
     const webflowAPI = getAPIClient(auth);
+    //implement the rest of your Webflow REST API logic here
     return NextResponse.json(
       { ok: false, error: "Not authenticated" },
       {
@@ -47,7 +48,7 @@ export async function POST(request) {
   const siteId = searchParams.get("siteId");
   const auth = searchParams.get("auth");
 
-  if (!auth || siteId) {
+  if (!auth || !siteId) {
     return NextResponse.json(
       { ok: false, error: "Not authenticated" },
       {
@@ -62,6 +63,7 @@ export async function POST(request) {
 
   try {
     const webflowAPI = getAPIClient(auth);
+    //implement the rest of your Webflow REST API logic here
     return NextResponse.json(
       { response: "ok" },
       {
