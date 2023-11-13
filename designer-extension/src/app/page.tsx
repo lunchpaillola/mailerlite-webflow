@@ -2,17 +2,13 @@
 import React, { useEffect, useState } from "react";
 import Login from "./components/Login";
 import Navigate from "./components/Navigate";
-import SelectForm from "./components/SelectForm";
-import ConfigureMailerlite from "./components/ConfigureMailerlite";
-import ViewWebhooks from "./components/ViewWebhooks";
 import LoadingComponent from "./components/LoadingComponent";
-import { Site, Form } from "./types/globalTypes";
+import { Site } from "./types/globalTypes";
 
 const MainPage: React.FC = () => {
   const [page, setPage] = useState(0);
   const [token, setToken] = useState<string>("");
   const [selectedSite, setSelectedSite] = useState<Site | null>(null);
-  const [selectedForm, setSelectedForm] = useState<Form | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -49,36 +45,7 @@ const MainPage: React.FC = () => {
       return <Login setPage={setPage} token={token} setToken={setToken} />;
     case 1:
       return <Navigate setPage={setPage} />;
-    case 2:
-      return (
-        <SelectForm
-          selectedForm={selectedForm}
-          setSelectedForm={setSelectedForm}
-          setPage={setPage}
-          token={token}
-          selectedSite={selectedSite}
-        />
-      );
-    case 3:
-      return (
-        <ConfigureMailerlite
-          selectedForm={selectedForm}
-          setSelectedForm={setSelectedForm}
-          setPage={setPage}
-          token={token}
-          selectedSite={selectedSite}
-        />
-      );
-    case 4:
-      return (
-        <ViewWebhooks
-          selectedForm={selectedForm}
-          setPage={setPage}
-          token={token}
-          selectedSite={selectedSite}
-        />
-      );
-  }
 };
+}
 
 export default MainPage;
