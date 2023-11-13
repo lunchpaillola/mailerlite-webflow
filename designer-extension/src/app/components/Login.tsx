@@ -65,10 +65,8 @@ const Login: React.FC<LoginProps> = ({
           <div className="mt-4 px-4 space-y-6">
             <div className="mt-8 space-y-6">
               <input
+                id="tokenInput"
                 type="text"
-                onBlur={(e) => {
-                  setToken(e.target.value);
-                }}
                 className="bg-[#383838] text-white py-2 px-4 rounded block w-full box-border text-center no-underlinefocus:outline-none focus:ring-gray-500"
                 placeholder="Enter auth token"
               />
@@ -76,8 +74,10 @@ const Login: React.FC<LoginProps> = ({
                 type="submit"
                 className="bg-[#383838] text-white py-2 px-4 rounded block text-center w-full box-border no-underline"
                 onClick={() => {
+                  const newToken = (document.getElementById('tokenInput') as HTMLInputElement)?.value;
+                  setToken(newToken);
+                  localStorage.setItem("webflow_token", newToken);
                   setPage(1);
-                  localStorage.setItem("webflow_token", token);
                 }}
               >
                 Authenticate
