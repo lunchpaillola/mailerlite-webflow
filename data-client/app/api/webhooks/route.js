@@ -22,7 +22,7 @@ const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
  * @throws Will throw an error if the 'imageURL' or 'siteId' is missing in the request, if there's an HTTP error when fetching the image, or if the upload to Webflow fails.
  */
 
-//GET a webgook
+//GET a webhook
 
 export async function GET(request) {
   const { searchParams } = new URL(request.url);

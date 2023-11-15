@@ -20,7 +20,6 @@ const ConfigureMailerlite: React.FC<ConfigureMailerLiteProps> = ({
   token,
 }) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  //const [fields, setFields] = useState<MailerliteFields[]>([]);
   const [groups, setGroups] = useState<MailerliteGroups[]>([]);
   const [webflowFormFields, setWebflowFormFields] = useState<
     WebflowFormFields[]

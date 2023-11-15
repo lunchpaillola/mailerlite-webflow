@@ -21,7 +21,7 @@ const apiKey = process.env.MAILERLITE_API_KEY;
  * @throws Will throw an error if the 'imageURL' or 'siteId' is missing in the request, if there's an HTTP error when fetching the image, or if the upload to Webflow fails.
  */
 
-//from the webhook will publish for mailierte 
+//from the webhook will publish to mailierte 
 export async function POST(request) {
   const { searchParams } = new URL(request.url);
   const email = searchParams.get("email");
@@ -41,7 +41,7 @@ export async function POST(request) {
   
   // Validate the structure of the payload (consider expanding this)
   if (!payload.payload || !payload.payload.data || !(email in payload.payload.data)) {
-    return NextResponse.json({ error: 'invalid payload structure' });
+    return NextResponse.json({ error: 'no email field in webhook' });
   }
 
   const submittedEmail = payload.payload.data[email];
