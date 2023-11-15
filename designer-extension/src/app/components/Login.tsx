@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import { LoginProps } from "../types/globalTypes";
+
 // Add your auth URL here
 const AUTH_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 

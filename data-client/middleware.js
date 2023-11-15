@@ -38,9 +38,6 @@ export async function middleware(request){
         return response;
       }
     } catch (error) {
-      // TODO: If access denied in query params then customer rejected install request,
-      // Send this info to the webflow_redirect page and show an error message to the user.
-      // Then redirect them to the login page.
       console.error(`Failed to get access token: ${error}`);
     }
   }
