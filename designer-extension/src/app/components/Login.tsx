@@ -21,7 +21,7 @@ const Login: React.FC<LoginProps> = ({
             Account authorized
           </h1>
           <p className="text-md text-center text-gray-400">
-            Continue to connect forms
+            Continue
           </p>
           <div className="mt-4 px-4 space-y-6">
             <button

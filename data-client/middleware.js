@@ -23,9 +23,6 @@ export async function middleware(request){
       },
     });
   }
-    else {
-      console.error("TEST ERROR")
-    }
   
   if (request.nextUrl.pathname === '/webflow_redirect' && request.nextUrl.searchParams.get('code')) {
     try {
@@ -35,9 +32,6 @@ export async function middleware(request){
         // If the access token is retrieved successfully, set it as a cookie and return the response
         const response = NextResponse.next();
         response.cookies.set('webflow_auth', token, {
-          // httpOnly: true,
-          // secure: true,
-          // sameSite: 'strict',
           maxAge: 60 * 60 * 24 * 30 // 30 days
         });
         response.cookies.set('authenticated', 'true');
