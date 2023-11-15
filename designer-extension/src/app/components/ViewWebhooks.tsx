@@ -77,7 +77,7 @@ const ViewWebhooks: React.FC<ViewWebhookProps> = ({
 
       const data = await response.json();
       if (data.webhooks) {
-        setWebhooks(data.webhooks.webhooks);
+        setWebhooks(data.webhooks);
       }
     } catch (error) {
       console.error("Error:", error);

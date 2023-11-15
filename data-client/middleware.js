@@ -23,9 +23,6 @@ export async function middleware(request){
       },
     });
   }
-    else {
-      console.error("TEST ERROR")
-    }
   
   if (request.nextUrl.pathname === '/webflow_redirect' && request.nextUrl.searchParams.get('code')) {
     try {
