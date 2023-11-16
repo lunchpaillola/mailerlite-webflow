@@ -28,20 +28,11 @@ const ConfigureMailerlite: React.FC<ConfigureMailerLiteProps> = ({
     Record<string, string>
   >({});
 
-  const mKey = String(process.env.MAILERLITE_API_KEY);
-
   const fetchMailerlite = async () => {
-    const params = new URLSearchParams({
-      auth: mKey,
-    });
-
     try {
-      const response = await fetch(
-        `${BACKEND_URL}/api/mailerlite?${params.toString()}`,
-        {
-          method: "GET",
-        }
-      );
+      const response = await fetch(`${BACKEND_URL}/api/mailerlite`, {
+        method: "GET",
+      });
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -144,44 +135,40 @@ const ConfigureMailerlite: React.FC<ConfigureMailerLiteProps> = ({
               <p className="text-sm mb-2 text-left text-gray-400">
                 Select Email
               </p>
-                <select
-                  required
-                  onChange={(e) =>
-                    handleDropdownChange("email", e.target.value)
-                  }
-                  className="bg-[#383838] text-white px-4 py-2 rounded outline-none w-full box-border mb-4"
-                >
-                  <option value="" disabled selected>
-                    Select Email Field
+              <select
+                required
+                onChange={(e) => handleDropdownChange("email", e.target.value)}
+                className="bg-[#383838] text-white px-4 py-2 rounded outline-none w-full box-border mb-4"
+              >
+                <option value="" disabled selected>
+                  Select Email Field
+                </option>
+                {webflowFormFields.map((webflowField) => (
+                  <option
+                    key={webflowField.id}
+                    value={webflowField.displayName}
+                  >
+                    {webflowField.displayName}
                   </option>
-                  {webflowFormFields.map((webflowField) => (
-                    <option
-                      key={webflowField.id}
-                      value={webflowField.displayName}
-                    >
-                      {webflowField.displayName}
-                    </option>
-                  ))}
-                </select>
+                ))}
+              </select>
               <p className="text-sm mb-2 text-left text-gray-400">
                 Select Group
               </p>
-                <select
-                  required
-                  onChange={(e) =>
-                    handleDropdownChange("group", e.target.value)
-                  }
-                  className="bg-[#383838] text-white px-4 py-2 rounded outline-none w-full box-border mb-4"
-                >
-                  <option value="" disabled selected>
-                    Select Mailerlite Group
+              <select
+                required
+                onChange={(e) => handleDropdownChange("group", e.target.value)}
+                className="bg-[#383838] text-white px-4 py-2 rounded outline-none w-full box-border mb-4"
+              >
+                <option value="" disabled selected>
+                  Select Mailerlite Group
+                </option>
+                {groups.map((group) => (
+                  <option key={group.id} value={group.id}>
+                    {group.name}
                   </option>
-                  {groups.map((group) => (
-                    <option key={group.id} value={group.id}>
-                      {group.name}
-                    </option>
-                  ))}
-                </select>
+                ))}
+              </select>
               <button
                 onClick={() => handleConfirm()}
                 className="bg-[#1f2de6] text-white px-4 py-2 rounded outline-none w-full box-border hover:bg-[#1634d1] focus:outline-none focus:ring-2 focus:ring-[#1f2de6] focus:ring-opacity-50"
