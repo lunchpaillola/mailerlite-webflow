@@ -1,7 +1,7 @@
 
 # Mailerlite to Webflow hybrid app
 
-This repository is a Mailerlite Webflow example that uses this Webflow app starter as a base. To learn more about the webflow app starter. Check out this tutorial (<https://inside.lunchpaillabs.com/kickstart-webflow-hybrid-apps-with-this-template>)
+This repository is a Mailerlite Webflow example that uses this Webflow app starter as a base. To learn more about the webflow app starter. [Check out this tutorial](https://inside.lunchpaillabs.com/kickstart-webflow-hybrid-apps-with-this-template)
 
 ## Getting Started
 
@@ -19,9 +19,7 @@ Here's how to get everything set up:
 1. Clone the repository using this command in your terminal:
 
    ```sh
-
-  git clone -b tutorial-branch <https://github.com/lunchpaillola/webflow-hybrid-app-starter.git>
-
+    git clone -b tutorial-branch https://github.com/lunchpaillola/webflow-hybrid-app-starter.git
    ```
 
 2. Navigate to the project directory and install dependencies:
