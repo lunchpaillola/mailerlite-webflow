@@ -78,7 +78,6 @@ export async function GET() {
   });
 
   try {
-    // Make concurrent API calls
     const [groupsResponse] = await Promise.all([
       mailerlite.groups.get(),
     ]);
