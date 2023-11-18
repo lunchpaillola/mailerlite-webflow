@@ -55,9 +55,8 @@ For a step-by-step and more detailed explanation of what's included in this star
 
 ## Features
 
-- Next.js and TypeScript setup for the designer extension
-- Vanilla JavaScript for the data client
 - Pre-configured Webflow authentication and API access
+- Example components for login and navigation
 
 
 ## Contribute
